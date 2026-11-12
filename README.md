@@ -34,3 +34,7 @@ Halaman absensi satu berkas (`index.html`) dengan database Supabase. Absen masuk
 - Jika provider mengganti IP kantor, daftarkan IP baru di tab **Jaringan**.
 - Perangkat dengan IPv6 mendaftarkan seluruh blok /64. Daftarkan juga IPv4 kantor jika perangkat bisa berpindah antara keduanya.
 - Repositori ini tidak berisi kunci atau PIN. Kunci `service_role` hanya ada di lingkungan Edge Function Supabase.
+
+## Deploy otomatis
+
+Project Vercel `absensi-kantor` terhubung ke repositori ini. Setiap push ke branch `main` otomatis ter-deploy ke produksi.
