@@ -17,7 +17,7 @@ const CORS = {
 };
 
 const ACTIONS = new Set([
-  "ping", "status", "change_pin", "in", "out", "leave",
+  "ping", "status", "board", "change_pin", "in", "out", "leave",
   "admin_overview", "admin_add_ip", "admin_del_ip", "admin_save_employee",
   "admin_reset_pin", "admin_edit_record", "admin_del_record", "admin_save_settings",
 ]);

@@ -9,6 +9,14 @@ Halaman absensi satu berkas (`index.html`) dengan database Supabase. Absen masuk
 | `index.html` | Halaman untuk karyawan dan admin. Tidak perlu build. |
 | `supabase/functions/absen/index.ts` | Edge Function: membaca IP pengirim lalu memanggil fungsi database. |
 | `supabase/migrations/20261112_absensi_ip_kantor.sql` | Tabel `abs_*` dan fungsi `abs_perform`. |
+| `supabase/migrations/20261112_absensi_kehadiran_board.sql` | Daftar kehadiran hari ini dan opsi "wajib absen". Jalankan setelah berkas di atas. |
+
+## Hak akses
+
+- **Karyawan**: hanya tab **Absen** (absen sendiri dan riwayat sendiri) dan **Kehadiran** (siapa yang sudah dan belum absen hari ini, beserta jam masuk/pulang dan status izin/sakit; catatan dan IP tidak ditampilkan).
+- **Admin**: semua tab, yaitu Rekap, Karyawan (tambah, ubah, reset PIN, nonaktifkan), Jaringan, dan Pengaturan, plus koreksi catatan absen.
+- Karyawan bisa dikecualikan dari daftar dengan mematikan **Wajib absen** di form karyawan (cocok untuk akun admin pengelola). Mereka tidak muncul di Kehadiran maupun Rekap.
+- Pembatasan ini dijaga di server (`abs_perform`), bukan hanya disembunyikan di halaman.
 
 ## Cara kerja
 
@@ -22,11 +30,12 @@ Halaman absensi satu berkas (`index.html`) dengan database Supabase. Absen masuk
 ## Pemasangan
 
 1. Jalankan `supabase/migrations/20261112_absensi_ip_kantor.sql` di SQL Editor Supabase.
-2. Buat admin pertama dengan kueri di bagian bawah berkas SQL itu. Catat PIN sementaranya, lalu ganti saat login pertama.
-3. Deploy Edge Function: `supabase functions deploy absen --no-verify-jwt`.
-4. Ubah konstanta `API` di `index.html` ke alamat fungsi di project Supabase Anda: `https://<project-ref>.supabase.co/functions/v1/absen`.
-5. Hubungkan repositori ini ke Vercel (framework: Other, tanpa build command). Matikan Vercel Authentication supaya karyawan bisa membuka halaman tanpa akun Vercel.
-6. Login sebagai admin dari WiFi kantor, buka tab **Jaringan**, lalu daftarkan jaringan yang sedang dipakai.
+2. Jalankan juga `20261112_absensi_kehadiran_board.sql`.
+3. Buat admin pertama dengan kueri di bagian bawah berkas SQL itu. Catat PIN sementaranya, lalu ganti saat login pertama.
+4. Deploy Edge Function: `supabase functions deploy absen --no-verify-jwt`.
+5. Ubah konstanta `API` di `index.html` ke alamat fungsi di project Supabase Anda: `https://<project-ref>.supabase.co/functions/v1/absen`.
+6. Hubungkan repositori ini ke Vercel (framework: Other, tanpa build command). Matikan Vercel Authentication supaya karyawan bisa membuka halaman tanpa akun Vercel.
+7. Login sebagai admin dari WiFi kantor, buka tab **Jaringan**, lalu daftarkan jaringan yang sedang dipakai.
 
 ## Catatan
 
