@@ -1,0 +1,3 @@
+# Fungsi ini melakukan autentikasi sendiri (kode karyawan + PIN), jadi JWT Supabase tidak dipakai.
+[functions.absen]
+verify_jwt = false

@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Absensi Karyawan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Tata letak: kartu jam besar (jam server + penggaris jam kerja) di kiri, tombol aksi di kanan; status jaringan kantor selalu terlihat di header. */
+:root{
+  --bg:#F2F5F9; --surface:#FFFFFF; --surface-2:#E9EEF5; --fg:#14202C; --muted:#586677; --line:#D8DFE9;
+  --accent:#1F4FD8; --accent-fg:#FFFFFF; --accent-soft:#E2EAFF;
+  --ok:#0F7A57; --ok-bg:#DAF2E8; --warn:#8F5200; --warn-bg:#FBE9C6; --bad:#B0261A; --bad-bg:#FCE2DE;
+  --info:#44546A; --info-bg:#E4E9F0; --sick:#0C6E69; --sick-bg:#D5F0EC;
+  --scrim:rgba(10,16,24,.55);
+  --font:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E141B; --surface:#161E27; --surface-2:#1E2833; --fg:#E7ECF2; --muted:#93A1B2; --line:#2A3642;
+    --accent:#7F9CFF; --accent-fg:#0B1220; --accent-soft:#1D2A52;
+    --ok:#4CD0A0; --ok-bg:#12382C; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
+    --info:#AEB9C8; --info-bg:#27313D; --sick:#58D3C6; --sick-bg:#10363A;
+    --scrim:rgba(0,0,0,.65);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E141B; --surface:#161E27; --surface-2:#1E2833; --fg:#E7ECF2; --muted:#93A1B2; --line:#2A3642;
+  --accent:#7F9CFF; --accent-fg:#0B1220; --accent-soft:#1D2A52;
+  --ok:#4CD0A0; --ok-bg:#12382C; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
+  --info:#AEB9C8; --info-bg:#27313D; --sick:#58D3C6; --sick-bg:#10363A;
+  --scrim:rgba(0,0,0,.65);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--font);
+  padding-block:max(20px,env(safe-area-inset-top,0px)) calc(56px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:940px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+#view{display:flex;flex-direction:column;gap:20px}
+h2{font-size:16px;font-weight:600;margin:0;letter-spacing:-.005em;text-wrap:balance}
+p{margin:0}
+.muted,.small{color:var(--muted)}
+.small{font-size:13px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.stack{display:flex;flex-direction:column;gap:14px}
+.pad{padding:20px}
+
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:36px;height:36px;flex:none;color:var(--accent)}
+.brand-name{font-weight:600;font-size:17px;letter-spacing:-.01em;overflow-wrap:anywhere}
+.brand-sub{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.top-r{display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-width:0;max-width:100%}
+.top-r .tabs{min-width:0}
+.tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:999px;max-width:100%;overflow-x:auto}
+.tabs button{border:0;background:transparent;color:var(--muted);font:inherit;font-weight:500;padding:7px 14px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-current="page"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.hero-clock{padding:24px 24px 20px;border-right:1px solid var(--line);min-width:0}
+.hero-act{padding:24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (max-width:720px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .hero-clock{border-right:0;border-bottom:1px solid var(--line)}
+}
+.login{max-width:420px;margin:0 auto;width:100%}
+.eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.clock{font-family:var(--mono);font-weight:500;font-size:clamp(40px,11vw,64px);line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:6px 0 22px}
+
+.ruler{margin-bottom:10px}
+.track{position:relative;height:10px;background:var(--surface-2);border-radius:999px}
+.band{position:absolute;top:0;bottom:0;background:var(--accent-soft)}
+.grace{position:absolute;top:0;bottom:0;background:var(--ok-bg);border-radius:999px 0 0 999px}
+.mark{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--fg)}
+.mark.in{background:var(--ok)}
+.mark.out{background:var(--accent)}
+.now{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--fg);transform:translateX(-50%);border-radius:2px}
+.ticks{position:relative;height:20px;margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+
+.status-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.who-line{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+.who-line strong{color:var(--fg);font-weight:600}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
+.kv dt{font-size:12px;color:var(--muted)}
+.kv dd{margin:0;font-family:var(--mono);font-size:18px;font-weight:500;font-variant-numeric:tabular-nums}
+.note{font-size:14px;overflow-wrap:anywhere}
+
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:10px 16px;cursor:pointer;min-height:44px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn.big{min-height:60px;font-size:17px;width:100%}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--bad);border-color:var(--bad);background:transparent}
+.btn.sm{min-height:34px;padding:5px 12px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px}
+.link{border:0;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent);cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:3px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.seg input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){.btn,.tabs button{transition:background-color .15s,border-color .15s}}
+
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.ok{color:var(--ok);background:var(--ok-bg)}
+.chip.warn{color:var(--warn);background:var(--warn-bg)}
+.chip.bad{color:var(--bad);background:var(--bad-bg)}
+.chip.info{color:var(--info);background:var(--info-bg)}
+.chip.sick{color:var(--sick);background:var(--sick-bg)}
+.chip.none{color:var(--muted);background:var(--surface-2)}
+.net{display:inline-flex;flex-direction:column;align-items:flex-end;gap:2px}
+.net .small{font-family:var(--mono);font-size:12px}
+
+.sec-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.nav{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.nav .label{min-width:130px;text-align:center;font-weight:600}
+.nav input[type=date]{width:auto}
+
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.strip div{background:var(--surface);padding:10px 14px}
+.strip b{display:block;font-family:var(--mono);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
+.strip span{font-size:12px;color:var(--muted)}
+
+.rows{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.row{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:2px 12px;padding:12px 16px;border-top:1px solid var(--line);align-items:center}
+.row:first-child{border-top:0}
+.r-date{font-weight:600}
+.r-date small{color:var(--muted);font-weight:400}
+.r-mid{font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums;min-width:0}
+.r-mid .dur{color:var(--muted)}
+.r-note{grid-column:2 / -1;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+th{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td.name{white-space:normal;min-width:170px}
+td.num,th.num{text-align:right}
+
+label,.lbl{display:block;font-size:13px;font-weight:500;margin-bottom:4px}
+input,select,textarea{font:inherit;font-size:16px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+input[type=checkbox],input[type=radio]{width:auto}
+textarea{min-height:96px;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.seg{display:flex;gap:8px}
+.seg label{flex:1;margin:0;position:relative}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg span{display:block;text-align:center;padding:9px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-weight:500}
+.seg input:checked+span{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.checks label{margin:0;position:relative}
+.checks input{position:absolute;opacity:0;width:1px;height:1px}
+.checks span{display:block;padding:7px 14px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-weight:500;font-size:14px}
+.checks input:checked+span{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.checks input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+
+.banner{border:1px solid var(--bad);background:var(--bad-bg);color:var(--bad);padding:10px 14px;border-radius:10px;font-size:14px;overflow-wrap:anywhere}
+.banner.note{border-color:var(--line);background:var(--warn-bg);color:var(--warn)}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;background:var(--surface)}
+.pinbox{font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:.14em;text-align:center;padding:14px;border-radius:10px;background:var(--surface-2);user-select:all}
+.list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.item{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:12px 16px;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item .who{min-width:0;overflow-wrap:anywhere}
+.item .who strong{font-weight:600}
+.item .btn-row{gap:8px}
+
+.scrim{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.dialog{background:var(--surface);border:1px solid var(--line);border-radius:14px;width:min(480px,100%);max-height:100%;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:500;z-index:30;max-width:calc(100% - 32px);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect x="1" y="1" width="34" height="34" rx="9" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="8" stroke="currentColor" stroke-width="2"/><path d="M18 13v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <div class="brand-name" id="brandName">Absensi Karyawan</div>
+        <div class="brand-sub" id="who"></div>
+      </div>
+    </div>
+    <div class="top-r">
+      <div id="net"></div>
+      <nav class="tabs" id="tabs" aria-label="Menu" hidden></nav>
+      <button type="button" class="btn sm ghost" id="logoutBtn" data-act="logout" hidden>Keluar</button>
+    </div>
+  </header>
+  <main id="view" aria-live="polite"></main>
+</div>
+<div id="modal"></div>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+(function(){
+"use strict";
+
+var API="https://nxtxsbyofdmlgacetqxm.supabase.co/functions/v1/absen";
+var DAYS_ID=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+var DAYS_SHORT=["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+var MONTHS_ID=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+var MONTHS_SHORT=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+var TZ_LABEL={"Asia/Jakarta":"WIB","Asia/Makassar":"WITA","Asia/Jayapura":"WIT"};
+var DEFAULT_CFG={company:"",start:"08:00",end:"17:00",grace:10,workdays:[1,2,3,4,5],libur:[],tz:"Asia/Jakarta",enforce:true};
+var STATUS={
+  hadir:{label:"Hadir",cls:"ok"},terlambat:{label:"Terlambat",cls:"warn"},
+  izin:{label:"Izin",cls:"info"},sakit:{label:"Sakit",cls:"sick"},alpa:{label:"Alpa",cls:"bad"},
+  belum:{label:"Belum absen",cls:"none"},libur:{label:"Libur",cls:"none"},none:{label:"–",cls:"none"}
+};
+var ERR={
+  auth:"Kode karyawan atau PIN salah. Setelah 5 kali salah, akun terkunci 15 menit.",
+  terlalu_banyak:"Terlalu banyak percobaan dari jaringan ini. Tunggu 15 menit lalu coba lagi.",
+  luar_kantor:"Anda tidak memakai WiFi kantor, jadi absen masuk dan pulang ditolak. Sambungkan ke WiFi kantor lalu coba lagi.",
+  sudah:"Absen ini sudah tercatat.",
+  belum_masuk:"Anda belum absen masuk hari ini.",
+  ganti_pin:"Ganti PIN sementara Anda dulu sebelum absen.",
+  pin_pendek:"PIN baru harus 6 sampai 12 karakter.",
+  pin_sama:"PIN baru tidak boleh sama dengan PIN lama.",
+  jaringan:"Tidak bisa terhubung ke server. Periksa koneksi internet Anda.",
+  server:"Server sedang bermasalah. Coba lagi sebentar lagi.",
+  forbidden:"Akun Anda tidak punya akses ke fitur ini.",
+  status_tidak_valid:"Pilih izin atau sakit.",
+  catatan_kosong:"Tulis alasan singkat.",
+  ip_tidak_terbaca:"Alamat IP Anda tidak terbaca oleh server.",
+  ip_tidak_valid:"Alamat IP tidak valid. Contoh: 203.0.113.5 atau 203.0.113.0/28.",
+  terlalu_luas:"Rentang IP terlalu luas. Gunakan IPv4 /16 atau lebih sempit.",
+  sudah_ada:"IP ini sudah ada di daftar.",
+  kode_tidak_valid:"Kode karyawan 2 sampai 30 karakter: huruf, angka, titik, garis bawah, atau strip.",
+  nama_kosong:"Isi nama karyawan.",
+  kode_dipakai:"Kode karyawan sudah dipakai.",
+  diri_sendiri:"Anda tidak bisa menonaktifkan atau mencabut hak admin akun Anda sendiri.",
+  tidak_ada:"Data tidak ditemukan.",
+  tanggal_depan:"Tidak bisa mengoreksi tanggal yang belum terjadi.",
+  jam_masuk:"Isi jam masuk.",
+  jam_pulang:"Jam pulang harus setelah jam masuk.",
+  jam_tidak_valid:"Jam tidak valid.",
+  jam_urutan:"Jam pulang harus setelah jam masuk.",
+  zona_tidak_valid:"Zona waktu tidak valid."
+};
+
+var S={kode:"",pin:"",me:null,cfg:Object.assign({},DEFAULT_CFG),ip:null,kantor:null,pingDone:false,
+  offset:0,today:null,recs:{},todayRec:null,since:null,
+  tab:"absen",sub:"harian",day:null,month:null,histMonth:null,ov:null,ovMonth:null,
+  busy:false,confirmOut:false,leaveOpen:false,err:"",modal:null,pending:false,mustPin:false,loaded:false};
+
+function $(s){return document.querySelector(s);}
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function pad(n){return String(n).padStart(2,"0");}
+function errMsg(c){return ERR[c]||"Terjadi kesalahan. Coba lagi.";}
+
+/* ---------- waktu & zona (jam server dipakai sebagai acuan) ---------- */
+var fmts={};
+function tzParts(d,tz){
+  var f=fmts[tz];
+  if(!f){f=fmts[tz]=new Intl.DateTimeFormat("en-CA",{timeZone:tz,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"});}
+  var o={},ps=f.formatToParts(d);
+  for(var i=0;i<ps.length;i++)o[ps[i].type]=ps[i].value;
+  return {ymd:o.year+"-"+o.month+"-"+o.day,h:(+o.hour)%24,m:+o.minute,s:+o.second};
+}
+function nowParts(){return tzParts(new Date(Date.now()+S.offset),S.cfg.tz);}
+function parseHM(s){var a=String(s).split(":");return (+a[0])*60+(+a[1]);}
+function fmtMin(m){return pad(Math.floor(m/60))+":"+pad(m%60);}
+function hm(iso){if(!iso)return "–";var p=tzParts(new Date(iso),S.cfg.tz);return pad(p.h)+":"+pad(p.m);}
+function minOf(iso){var p=tzParts(new Date(iso),S.cfg.tz);return p.h*60+p.m;}
+function utc(s){var a=s.split("-").map(Number);return Date.UTC(a[0],a[1]-1,a[2]);}
+function fromUTC(t){var d=new Date(t);return d.getUTCFullYear()+"-"+pad(d.getUTCMonth()+1)+"-"+pad(d.getUTCDate());}
+function addDays(s,n){return fromUTC(utc(s)+n*864e5);}
+function dow(s){return new Date(utc(s)).getUTCDay();}
+function monthOf(s){return s.slice(0,7);}
+function monthDays(ym){var a=ym.split("-").map(Number),n=new Date(Date.UTC(a[0],a[1],0)).getUTCDate(),o=[];for(var i=1;i<=n;i++)o.push(ym+"-"+pad(i));return o;}
+function addMonth(ym,n){var a=ym.split("-").map(Number),t=new Date(Date.UTC(a[0],a[1]-1+n,1));return t.getUTCFullYear()+"-"+pad(t.getUTCMonth()+1);}
+function longDate(s){var a=s.split("-").map(Number);return DAYS_ID[dow(s)]+", "+a[2]+" "+MONTHS_ID[a[1]-1]+" "+a[0];}
+function shortDay(s){return DAYS_SHORT[dow(s)];}
+function monthLabel(ym){var a=ym.split("-").map(Number);return MONTHS_ID[a[1]-1]+" "+a[0];}
+function tzLabel(){return TZ_LABEL[S.cfg.tz]||S.cfg.tz;}
+function fmtDur(min){return Math.floor(min/60)+" j "+pad(min%60)+" m";}
+
+/* ---------- aturan tampilan (keputusan sebenarnya dibuat server) ---------- */
+function normCfg(d){
+  var c=Object.assign({},DEFAULT_CFG,d||{});
+  if(!Array.isArray(c.workdays))c.workdays=DEFAULT_CFG.workdays.slice();
+  if(!Array.isArray(c.libur))c.libur=[];
+  c.grace=Number(c.grace)||0;
+  if(!TZ_LABEL[c.tz])c.tz=DEFAULT_CFG.tz;
+  return c;
+}
+function isWorkday(s){return S.cfg.workdays.indexOf(dow(s))>=0&&S.cfg.libur.indexOf(s)<0;}
+function minutesWorked(r){return r&&r.in&&r.out?Math.max(0,Math.round((new Date(r.out)-new Date(r.in))/60000)):null;}
+function dayInfo(map,since,date){
+  var rec=map&&map[date]||null;
+  if(rec)return {rec:rec,key:rec.status||"hadir"};
+  if(since&&date<since)return {rec:null,key:"none"};
+  if(!isWorkday(date))return {rec:null,key:"libur"};
+  if(date>S.today)return {rec:null,key:"none"};
+  if(date===S.today)return {rec:null,key:"belum"};
+  return {rec:null,key:"alpa"};
+}
+function monthStats(map,since,ym){
+  var st={hadir:0,terlambat:0,izin:0,sakit:0,alpa:0,minutes:0},days=monthDays(ym);
+  for(var i=0;i<days.length;i++){
+    var inf=dayInfo(map,since,days[i]);
+    if(inf.key in st&&inf.key!=="minutes")st[inf.key]++;
+    var w=inf.rec?minutesWorked(inf.rec):null;
+    if(w)st.minutes+=w;
+  }
+  return st;
+}
+function mapOf(list,keyField){
+  var m={};
+  (list||[]).forEach(function(r){var k=keyField?r[keyField]:"_";if(!m[k])m[k]={};m[k][r.date]=r;});
+  return keyField?m:(m._||{});
+}
+
+/* ---------- komponen kecil ---------- */
+function chip(key){var s=STATUS[key]||STATUS.none;return '<span class="chip '+s.cls+'">'+s.label+'</span>';}
+function toast(msg){var t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true;},3200);}
+function copyText(t){
+  try{navigator.clipboard.writeText(t).then(function(){toast("Disalin");},function(){toast("Salin manual dari kotak");});}
+  catch(e){toast("Salin manual dari kotak");}
+}
+
+/* ---------- komunikasi dengan server ---------- */
+async function api(action,payload,anon){
+  var ctl=new AbortController(),to=setTimeout(function(){ctl.abort();},20000);
+  try{
+    var r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({action:action,kode:anon?null:S.kode,pin:anon?null:S.pin,payload:payload||{}}),signal:ctl.signal});
+    var d=null;try{d=await r.json();}catch(e){}
+    return d||{ok:false,error:"server"};
+  }catch(e){return {ok:false,error:"jaringan"};}
+  finally{clearTimeout(to);}
+}
+function applyNet(r){
+  if(r&&typeof r.kantor==="boolean"){S.kantor=r.kantor;}
+  if(r&&"ip" in r)S.ip=r.ip;
+}
+async function doPing(){
+  var r=await api("ping",{},true);
+  if(r.ok){applyNet(r);S.cfg.enforce=r.enforce!==false;if(r.company!=null)S.cfg.company=r.company||"";S.pingDone=true;}
+  else S.pingDone=true;
+}
+async function loadStatus(){
+  var r=await api("status",{month:S.histMonth||undefined});
+  if(!r.ok){return r;}
+  S.me=r.me;S.cfg=normCfg(r.cfg);applyNet(r);
+  S.offset=Date.parse(r.server_time)-Date.now();
+  S.today=r.today;
+  S.recs=mapOf(r.records);S.todayRec=r.today_rec||null;S.since=r.me&&r.me.since||null;
+  S.mustPin=!!r.me.must_change_pin;
+  if(!S.histMonth)S.histMonth=monthOf(S.today);
+  if(!S.day){S.day=S.today;}
+  if(!S.month)S.month=monthOf(S.today);
+  S.loaded=true;
+  return r;
+}
+async function loadOverview(month){
+  var r=await api("admin_overview",{month:month||S.ovMonth||S.month});
+  if(!r.ok)return r;
+  S.ov=r;S.ovMonth=month||S.ovMonth||S.month;
+  S.cfg=normCfg(r.cfg);applyNet(r);
+  S.ovRecs=mapOf(r.records,"emp");
+  return r;
+}
+function needOvMonth(){return S.sub==="harian"?monthOf(S.day):S.month;}
+async function refreshAll(silent){
+  if(!S.me)return;
+  var r=await loadStatus();
+  if(!r.ok){
+    if(r.error==="auth"||r.error==="forbidden"){logout("Sesi berakhir. Masuk lagi.");return;}
+    if(!silent){S.err=errMsg(r.error);}
+  }else if(!silent){S.err="";}
+  if(S.me&&S.me.admin&&S.tab!=="absen"){
+    var m=S.tab==="rekap"?needOvMonth():(S.ovMonth||monthOf(S.today));
+    var o=await loadOverview(m);
+    if(!o.ok&&!silent)S.err=errMsg(o.error);
+  }
+  render();
+}
+async function act(fn,okMsg){
+  if(S.busy)return null;
+  S.busy=true;render(true);
+  var r=null;
+  try{r=await fn();}catch(e){r={ok:false,error:"jaringan"};}
+  S.busy=false;
+  if(r&&r.ok){S.err="";if(okMsg)toast(okMsg);}
+  else if(r){S.err=errMsg(r.error);if(r.error==="luar_kantor"){S.kantor=false;if(r.ip)S.ip=r.ip;}}
+  return r;
+}
+
+/* ---------- header ---------- */
+function renderHeader(){
+  $("#brandName").textContent=S.cfg.company||"Absensi Karyawan";
+  var who=[];
+  if(S.me){who.push(S.me.nama);if(S.me.admin)who.push("Admin");}
+  $("#who").textContent=who.join(" · ")||"Absen masuk dan pulang dari WiFi kantor";
+  var nav=$("#tabs");
+  if(S.me&&S.me.admin&&!S.mustPin){
+    nav.hidden=false;
+    nav.innerHTML=[["absen","Absen"],["rekap","Rekap"],["karyawan","Karyawan"],["jaringan","Jaringan"],["pengaturan","Pengaturan"]].map(function(t){
+      return '<button type="button" data-act="tab" data-tab="'+t[0]+'"'+(S.tab===t[0]?' aria-current="page"':"")+'>'+t[1]+'</button>';
+    }).join("");
+  }else nav.hidden=true;
+  $("#logoutBtn").hidden=!S.me;
+  var net=$("#net"),h="";
+  if(S.pingDone||S.me){
+    if(S.cfg.enforce===false)h='<span class="chip info">Pembatasan WiFi nonaktif</span>';
+    else if(S.kantor===true)h='<span class="chip ok">Terhubung WiFi kantor</span>';
+    else if(S.kantor===false)h='<span class="chip bad">Di luar WiFi kantor</span>';
+    else h='<span class="chip none">Jaringan belum diperiksa</span>';
+    if(S.ip)h+='<span class="small">IP '+esc(S.ip)+'</span>';
+  }
+  net.className="net";net.innerHTML=h;
+}
+
+/* ---------- login ---------- */
+function viewLogin(){
+  return '<section class="card pad stack login"><div class="stack" style="gap:4px"><h2>Masuk untuk absen</h2><p class="muted">Gunakan kode karyawan dan PIN dari admin. Absen masuk dan pulang hanya diterima saat Anda tersambung ke WiFi kantor.</p></div>'+
+    '<form data-form="login" class="stack">'+
+    '<div><label for="f-kode">Kode karyawan</label><input id="f-kode" name="kode" required maxlength="30" autocomplete="username" autocapitalize="none" spellcheck="false" value="'+esc(S.kode)+'"></div>'+
+    '<div><label for="f-pin">PIN</label><input id="f-pin" name="pin" type="password" required maxlength="40" autocomplete="current-password"></div>'+
+    '<button class="btn primary big" type="submit"'+(S.busy?" disabled":"")+'>'+(S.busy?"Memeriksa…":"Masuk")+'</button></form>'+
+    (S.pingDone&&S.kantor===false&&S.cfg.enforce!==false?'<p class="small">Anda sedang di luar WiFi kantor. Masuk tetap bisa, tetapi absen masuk dan pulang baru diterima setelah tersambung ke WiFi kantor.</p>':"")+'</section>';
+}
+function viewChangePin(){
+  return '<section class="card pad stack login"><div class="stack" style="gap:4px"><h2>Buat PIN baru</h2><p class="muted">PIN dari admin hanya sementara. Buat PIN pribadi 6 sampai 12 karakter yang hanya Anda yang tahu.</p></div>'+
+    '<form data-form="pin" class="stack">'+
+    '<div><label for="f-new">PIN baru</label><input id="f-new" name="new" type="password" required minlength="6" maxlength="12" autocomplete="new-password"></div>'+
+    '<div><label for="f-new2">Ulangi PIN baru</label><input id="f-new2" name="new2" type="password" required minlength="6" maxlength="12" autocomplete="new-password"></div>'+
+    '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Simpan PIN</button><button type="button" class="btn ghost" data-act="logout">Batal</button></div></form></section>';
+}
+
+/* ---------- absen karyawan ---------- */
+function rulerPct(){
+  var st=parseHM(S.cfg.start),en=parseHM(S.cfg.end),lo=st-60,hi=en+60;
+  return function(m){return Math.max(0,Math.min(100,(m-lo)/(hi-lo)*100));};
+}
+function clockText(){var p=nowParts();return pad(p.h)+":"+pad(p.m)+":"+pad(p.s);}
+function ruler(rec){
+  var pct=rulerPct(),st=parseHM(S.cfg.start),en=parseHM(S.cfg.end),n=nowParts();
+  function mk(iso,cls,label){return iso?'<span class="mark '+cls+'" style="left:'+pct(minOf(iso))+'%" title="'+label+' '+hm(iso)+'"></span>':"";}
+  return '<div class="ruler" aria-hidden="true"><div class="track">'+
+    '<span class="band" style="left:'+pct(st)+'%;width:'+(pct(en)-pct(st))+'%"></span>'+
+    '<span class="grace" style="left:'+pct(st)+'%;width:'+(pct(st+S.cfg.grace)-pct(st))+'%"></span>'+
+    mk(rec&&rec.in,"in","Masuk")+mk(rec&&rec.out,"out","Pulang")+
+    '<span class="now" id="nowMark" style="left:'+pct(n.h*60+n.m)+'%"></span></div>'+
+    '<div class="ticks"><span style="left:'+pct(st)+'%">'+esc(S.cfg.start)+'</span><span style="left:'+pct(en)+'%">'+esc(S.cfg.end)+'</span></div></div>';
+}
+function viewAbsen(){return todayCard()+historyBlock();}
+function todayCard(){
+  var rec=S.todayRec;
+  return '<section class="card hero" aria-label="Absen hari ini"><div class="hero-clock">'+
+    '<div class="eyebrow">'+esc(longDate(S.today))+' · '+esc(tzLabel())+' · jam server</div>'+
+    '<div class="clock" id="clock">'+clockText()+'</div>'+ruler(rec)+
+    '<p class="small">Jam kerja '+esc(S.cfg.start)+'–'+esc(S.cfg.end)+'. Masuk sampai '+fmtMin(parseHM(S.cfg.start)+S.cfg.grace)+' dihitung tepat waktu.</p></div>'+
+    '<div class="hero-act">'+actionBlock(rec)+'</div></section>';
+}
+function leaveForm(){
+  return '<form data-form="leave" class="stack"><div><div class="lbl">Keterangan hari ini</div><div class="seg">'+
+    '<label><input id="f-izin" type="radio" name="jenis" value="izin" checked><span>Izin</span></label>'+
+    '<label><input id="f-sakit" type="radio" name="jenis" value="sakit"><span>Sakit</span></label></div></div>'+
+    '<div><label for="f-note">Catatan</label><input id="f-note" name="note" maxlength="140" required placeholder="Alasan singkat"></div>'+
+    '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Kirim</button><button type="button" class="btn ghost" data-act="izin-cancel">Batal</button></div></form>';
+}
+function netGate(){
+  if(S.cfg.enforce===false||S.kantor!==false)return "";
+  return '<div class="banner" role="alert">Anda tidak tersambung ke WiFi kantor. Tombol absen masuk dan pulang dinonaktifkan sampai Anda tersambung.'+
+    ' <button type="button" class="link" data-act="recheck" style="color:inherit">Periksa ulang jaringan</button></div>';
+}
+function actionBlock(rec){
+  var m=S.me,wd=isWorkday(S.today),blocked=S.cfg.enforce!==false&&S.kantor===false;
+  var who='<div class="who-line"><strong>'+esc(m.nama)+'</strong>'+(m.divisi?' · '+esc(m.divisi):"")+'</div>';
+  var body="";
+  if(!rec){
+    if(S.leaveOpen){body=leaveForm();}
+    else{
+      body='<div class="status-line">'+chip("belum")+'</div>'+netGate()+
+        (wd?"":'<p class="small">Hari ini bukan hari kerja. Absen tetap dicatat sebagai hari libur.</p>')+
+        '<button type="button" class="btn primary big" data-act="in"'+(S.busy||blocked?" disabled":"")+'>Absen Masuk</button>'+
+        '<button type="button" class="btn ghost" data-act="izin-open">Saya izin atau sakit</button>'+
+        '<p class="small">Izin atau sakit bisa dilaporkan dari mana saja.</p>';
+    }
+  }else if(rec.status==="izin"||rec.status==="sakit"){
+    body='<div class="status-line">'+chip(rec.status)+'</div>'+(rec.note?'<p class="note">'+esc(rec.note)+'</p>':"")+
+      '<p class="small">Perlu perubahan? Hubungi admin untuk koreksi.</p>';
+  }else{
+    var w=minutesWorked(rec);
+    body='<div class="status-line">'+chip(rec.status||"hadir")+(rec.status==="terlambat"?'<span class="small">'+rec.late+' menit setelah '+esc(S.cfg.start)+'</span>':"")+'</div>'+
+      '<dl class="kv"><div><dt>Masuk</dt><dd>'+hm(rec.in)+'</dd></div><div><dt>Pulang</dt><dd>'+(rec.out?hm(rec.out):"–")+'</dd></div><div><dt>Durasi</dt><dd>'+(w!=null?fmtDur(w):"–")+'</dd></div></dl>';
+    if(!rec.out){
+      body+=netGate();
+      body+=S.confirmOut
+        ?'<div class="banner note">Sekarang belum jam pulang ('+esc(S.cfg.end)+'). Tetap absen pulang?</div><div class="btn-row"><button type="button" class="btn primary" data-act="out-yes"'+(S.busy||blocked?" disabled":"")+'>Ya, absen pulang</button><button type="button" class="btn ghost" data-act="out-cancel">Batal</button></div>'
+        :'<button type="button" class="btn primary big" data-act="out"'+(S.busy||blocked?" disabled":"")+'>Absen Pulang</button>';
+    }else{
+      body+='<p class="small">Terima kasih, absensi hari ini sudah lengkap.</p>';
+    }
+  }
+  return who+body;
+}
+function historyBlock(){
+  var ym=S.histMonth,st=monthStats(S.recs,S.since,ym),days=monthDays(ym).filter(function(d){return d<=S.today;}).reverse(),rows="";
+  days.forEach(function(d){
+    var inf=dayInfo(S.recs,S.since,d);
+    if(inf.key==="libur"||inf.key==="none")return;
+    var r=inf.rec,w=r?minutesWorked(r):null,a=d.split("-");
+    rows+='<li class="row"><div class="r-date">'+shortDay(d)+' <small>'+(+a[2])+' '+MONTHS_SHORT[a[1]-1]+'</small></div>'+
+      '<div class="r-mid">'+(r&&r.in?hm(r.in)+' – '+(r.out?hm(r.out):"…")+(w!=null?' <span class="dur">· '+fmtDur(w)+'</span>':""):'<span class="dur">–</span>')+'</div>'+
+      '<div>'+chip(inf.key)+'</div>'+(r&&r.note?'<div class="r-note">'+esc(r.note)+'</div>':"")+'</li>';
+  });
+  return '<section class="stack"><div class="sec-h"><h2>Riwayat saya</h2><div class="nav">'+
+    '<button type="button" class="btn sm ghost" data-act="hist-prev" aria-label="Bulan sebelumnya">‹</button><span class="label">'+monthLabel(ym)+'</span>'+
+    '<button type="button" class="btn sm ghost" data-act="hist-next" aria-label="Bulan berikutnya"'+(ym>=monthOf(S.today)?" disabled":"")+'>›</button></div></div>'+
+    '<div class="strip"><div><b>'+st.hadir+'</b><span>Tepat waktu</span></div><div><b>'+st.terlambat+'</b><span>Terlambat</span></div><div><b>'+st.izin+'</b><span>Izin</span></div><div><b>'+st.sakit+'</b><span>Sakit</span></div><div><b>'+st.alpa+'</b><span>Alpa</span></div><div><b>'+fmtDur(st.minutes)+'</b><span>Total jam kerja</span></div></div>'+
+    (rows?'<ul class="rows">'+rows+'</ul>':'<div class="empty">Belum ada catatan di bulan ini.</div>')+'</section>';
+}
+
+/* ---------- admin: rekap ---------- */
+function activeEmps(){return (S.ov?S.ov.employees:[]).filter(function(e){return e.aktif;});}
+function ovLoading(){return '<div class="empty">Memuat data…</div>';}
+function viewRekap(){
+  if(!S.ov)return ovLoading();
+  var sub='<div class="tabs" style="align-self:flex-start"><button type="button" data-act="sub" data-sub="harian"'+(S.sub==="harian"?' aria-current="page"':"")+'>Harian</button><button type="button" data-act="sub" data-sub="bulanan"'+(S.sub==="bulanan"?' aria-current="page"':"")+'>Bulanan</button></div>';
+  var want=needOvMonth();
+  return sub+(S.ovMonth!==want?ovLoading():(S.sub==="harian"?rekapHarian():rekapBulanan()));
+}
+function emptyEmps(){return '<div class="empty">Belum ada karyawan aktif. Tambahkan karyawan di tab Karyawan.</div>';}
+function rekapHarian(){
+  var emps=activeEmps(),d=S.day;
+  var rows=emps.map(function(e){var inf=dayInfo(S.ovRecs[e.id],e.since,d);return {e:e,inf:inf,r:inf.rec};});
+  function cnt(k){return rows.filter(function(x){return x.inf.key===k;}).length;}
+  var strip='<div class="strip"><div><b>'+emps.length+'</b><span>Karyawan aktif</span></div><div><b>'+(cnt("hadir")+cnt("terlambat"))+'</b><span>Hadir</span></div><div><b>'+cnt("terlambat")+'</b><span>Terlambat</span></div><div><b>'+(cnt("izin")+cnt("sakit"))+'</b><span>Izin / sakit</span></div><div><b>'+(cnt("belum")+cnt("alpa"))+'</b><span>Belum absen / alpa</span></div></div>';
+  var trs=rows.map(function(x){
+    var e=x.e,r=x.r,w=r?minutesWorked(r):null;
+    return '<tr><td class="name"><strong>'+esc(e.nama)+'</strong><div class="small">'+esc([e.kode,e.divisi].filter(Boolean).join(" · "))+'</div></td>'+
+      '<td class="mono">'+(r&&r.in?hm(r.in):"–")+'</td><td class="mono">'+(r&&r.out?hm(r.out):"–")+'</td><td class="mono">'+(w!=null?fmtDur(w):"–")+'</td>'+
+      '<td>'+chip(x.inf.key)+(r&&r.late?' <span class="small mono">+'+r.late+' m</span>':"")+(r&&r.note?'<div class="small" style="white-space:normal">'+esc(r.note)+'</div>':"")+'</td>'+
+      '<td>'+(d<=S.today?'<button type="button" class="btn sm" data-act="edit" data-emp="'+esc(e.id)+'" data-date="'+d+'">Koreksi</button>':"")+'</td></tr>';
+  }).join("");
+  return '<section class="stack"><div class="sec-h"><h2>'+esc(longDate(d))+'</h2><div class="nav">'+
+    '<button type="button" class="btn sm ghost" data-act="day-prev" aria-label="Hari sebelumnya">‹</button>'+
+    '<input type="date" id="f-day" value="'+d+'" aria-label="Pilih tanggal">'+
+    '<button type="button" class="btn sm ghost" data-act="day-next" aria-label="Hari berikutnya">›</button>'+
+    '<button type="button" class="btn sm" data-act="day-today">Hari ini</button></div></div>'+strip+
+    (emps.length?'<div class="tablewrap"><table><thead><tr><th>Karyawan</th><th>Masuk</th><th>Pulang</th><th>Durasi</th><th>Status</th><th></th></tr></thead><tbody>'+trs+'</tbody></table></div>':emptyEmps())+'</section>';
+}
+function rekapBulanan(){
+  var ym=S.month,emps=activeEmps();
+  var trs=emps.map(function(e){
+    var st=monthStats(S.ovRecs[e.id],e.since,ym);
+    return '<tr><td class="name"><strong>'+esc(e.nama)+'</strong><div class="small">'+esc([e.kode,e.divisi].filter(Boolean).join(" · "))+'</div></td>'+
+      '<td class="num mono">'+st.hadir+'</td><td class="num mono">'+st.terlambat+'</td><td class="num mono">'+st.izin+'</td><td class="num mono">'+st.sakit+'</td><td class="num mono">'+st.alpa+'</td><td class="num mono">'+fmtDur(st.minutes)+'</td></tr>';
+  }).join("");
+  return '<section class="stack"><div class="sec-h"><h2>Rekap '+monthLabel(ym)+'</h2><div class="nav">'+
+    '<button type="button" class="btn sm ghost" data-act="month-prev" aria-label="Bulan sebelumnya">‹</button><span class="label">'+monthLabel(ym)+'</span>'+
+    '<button type="button" class="btn sm ghost" data-act="month-next" aria-label="Bulan berikutnya"'+(ym>=monthOf(S.today)?" disabled":"")+'>›</button>'+
+    '<button type="button" class="btn sm primary" data-act="export"'+(emps.length?"":" disabled")+'>Unduh CSV</button></div></div>'+
+    (emps.length?'<div class="tablewrap"><table><thead><tr><th>Karyawan</th><th class="num">Tepat waktu</th><th class="num">Terlambat</th><th class="num">Izin</th><th class="num">Sakit</th><th class="num">Alpa</th><th class="num">Total jam</th></tr></thead><tbody>'+trs+'</tbody></table></div>':emptyEmps())+'</section>';
+}
+
+/* ---------- admin: karyawan ---------- */
+function viewKaryawan(){
+  if(!S.ov)return ovLoading();
+  var items=S.ov.employees.map(function(e){
+    return '<li class="item"><div class="who"><strong>'+esc(e.nama)+'</strong> <span class="small mono">'+esc(e.kode)+'</span>'+
+      '<div class="small">'+esc(e.divisi||"Tanpa divisi")+'</div></div>'+
+      '<div class="btn-row">'+(e.admin?'<span class="chip info">Admin</span>':"")+(e.aktif?"":'<span class="chip none">Nonaktif</span>')+(e.must_change_pin?'<span class="chip warn">PIN sementara</span>':"")+
+      '<button type="button" class="btn sm" data-act="emp-edit" data-id="'+esc(e.id)+'">Ubah</button>'+
+      '<button type="button" class="btn sm" data-act="emp-reset" data-id="'+esc(e.id)+'">Reset PIN</button></div></li>';
+  }).join("");
+  return '<section class="stack"><div class="sec-h"><h2>Karyawan ('+S.ov.employees.length+')</h2><button type="button" class="btn sm primary" data-act="emp-new">Tambah karyawan</button></div>'+
+    (items?'<ul class="list">'+items+'</ul>':'<div class="empty">Belum ada karyawan.</div>')+
+    '<p class="small">Setiap karyawan mendapat PIN sementara yang hanya tampil sekali. Saat pertama masuk, karyawan wajib membuat PIN sendiri.</p></section>';
+}
+
+/* ---------- admin: jaringan kantor ---------- */
+function viewJaringan(){
+  if(!S.ov)return ovLoading();
+  var enforce=S.cfg.enforce!==false;
+  var names={};S.ov.employees.forEach(function(e){names[e.id]=e.nama;});
+  var ips=S.ov.ips.map(function(o){
+    return '<li class="item"><div class="who"><strong class="mono">'+esc(o.ip)+'</strong><div class="small">'+esc(o.label||"Tanpa label")+'</div></div>'+
+      '<button type="button" class="btn sm danger" data-act="ip-del" data-id="'+esc(o.id)+'">Hapus</button></li>';
+  }).join("");
+  var den=S.ov.denied.map(function(d){
+    var t=new Date(d.at),p=tzParts(t,S.cfg.tz);
+    return '<li class="item"><div class="who"><strong>'+esc(names[d.emp]||"Karyawan dihapus")+'</strong><div class="small">'+(d.action==="in"?"Absen masuk":"Absen pulang")+' ditolak</div></div>'+
+      '<div class="small mono">'+esc(d.ip||"IP tidak terbaca")+' · '+p.ymd.slice(5).split("-").reverse().join("/")+' '+pad(p.h)+':'+pad(p.m)+'</div></li>';
+  }).join("");
+  var v6=S.ip&&S.ip.indexOf(":")>=0;
+  return '<section class="stack"><div class="card pad stack"><div class="sec-h"><h2>Pembatasan jaringan</h2>'+
+    '<button type="button" class="btn sm '+(enforce?"danger":"primary")+'" data-act="enforce">'+(enforce?"Nonaktifkan pembatasan":"Aktifkan pembatasan")+'</button></div>'+
+    '<p class="muted">'+(enforce?"Absen masuk dan pulang hanya diterima dari alamat IP di daftar bawah. Izin dan sakit tetap bisa dilaporkan dari mana saja.":"Pembatasan nonaktif: absen bisa dari mana saja. Aktifkan lagi setelah daftar IP kantor terisi.")+'</p>'+
+    '<div class="status-line">'+(S.kantor?'<span class="chip ok">Perangkat ini di jaringan terdaftar</span>':'<span class="chip bad">Perangkat ini di luar daftar</span>')+'<span class="small mono">IP terbaca: '+esc(S.ip||"tidak terbaca")+'</span></div></div>'+
+    '<div class="card pad stack"><h2>Daftarkan jaringan kantor</h2>'+
+    '<form data-form="ip-current" class="stack"><div><label for="f-ip-label">Label (opsional)</label><input id="f-ip-label" name="label" maxlength="60" placeholder="Contoh: Kantor pusat, provider A"></div>'+
+    '<div class="btn-row"><button class="btn primary" type="submit"'+(S.ip&&!S.busy?"":" disabled")+'>Daftarkan jaringan yang sedang saya pakai</button></div>'+
+    '<p class="small">Lakukan ini dari perangkat yang tersambung ke WiFi kantor. Jika di sini tertulis IP rumah atau kuota seluler, jangan didaftarkan.'+(v6?' IP Anda berformat IPv6, jadi yang didaftarkan seluruh blok /64 jaringan ini.':"")+' Jika kantor punya dua provider internet, daftarkan masing-masing dari perangkat di WiFi tersebut.</p></form>'+
+    '<form data-form="ip-manual" class="stack"><div class="grid2"><div><label for="f-ip">Atau ketik IP / rentang</label><input id="f-ip" name="ip" required maxlength="50" placeholder="203.0.113.5 atau 203.0.113.0/28" autocapitalize="none" spellcheck="false"></div>'+
+    '<div><label for="f-ip-label2">Label</label><input id="f-ip-label2" name="label" maxlength="60"></div></div>'+
+    '<div class="btn-row"><button class="btn" type="submit"'+(S.busy?" disabled":"")+'>Tambah ke daftar</button></div></form></div>'+
+    '<div class="stack"><h2>IP kantor terdaftar ('+S.ov.ips.length+')</h2>'+(ips?'<ul class="list">'+ips+'</ul>':'<div class="empty">Belum ada IP terdaftar. Selama daftar kosong dan pembatasan aktif, tidak ada karyawan yang bisa absen.</div>')+
+    '<p class="small">Jika provider internet kantor mengganti IP, absen akan ditolak sampai IP baru didaftarkan. Tanyakan ke provider apakah kantor memakai IP publik tetap.</p></div>'+
+    '<div class="stack"><h2>Absen ditolak terakhir</h2>'+(den?'<ul class="list">'+den+'</ul>':'<div class="empty">Belum ada absen yang ditolak.</div>')+'</div></section>';
+}
+
+/* ---------- admin: pengaturan ---------- */
+function viewSettings(){
+  var c=S.cfg,order=[1,2,3,4,5,6,0];
+  var wd=order.map(function(n){return '<label><input id="f-wd'+n+'" type="checkbox" name="wd" value="'+n+'"'+(c.workdays.indexOf(n)>=0?" checked":"")+'><span>'+DAYS_ID[n]+'</span></label>';}).join("");
+  var tzs=Object.keys(TZ_LABEL).map(function(z){return '<option value="'+z+'"'+(c.tz===z?" selected":"")+'>'+TZ_LABEL[z]+' ('+z+')</option>';}).join("");
+  return '<section class="card pad stack"><div class="stack" style="gap:4px"><h2>Pengaturan jam kerja</h2><p class="muted">Perubahan berlaku untuk absen berikutnya. Catatan yang sudah tersimpan tidak dihitung ulang.</p></div>'+
+    '<form data-form="settings" class="stack"><div class="grid2">'+
+    '<div><label for="f-company">Nama perusahaan (tampil di judul)</label><input id="f-company" name="company" maxlength="60" value="'+esc(c.company)+'" placeholder="Contoh: PT Maju Jaya"></div>'+
+    '<div><label for="f-tz">Zona waktu kantor</label><select id="f-tz" name="tz">'+tzs+'</select></div>'+
+    '<div><label for="f-start">Jam masuk</label><input id="f-start" name="start" type="time" required value="'+esc(c.start)+'"></div>'+
+    '<div><label for="f-end">Jam pulang</label><input id="f-end" name="end" type="time" required value="'+esc(c.end)+'"></div>'+
+    '<div><label for="f-grace">Toleransi keterlambatan (menit)</label><input id="f-grace" name="grace" type="number" min="0" max="120" required value="'+c.grace+'"></div></div>'+
+    '<div><div class="lbl">Hari kerja</div><div class="checks">'+wd+'</div></div>'+
+    '<div><label for="f-libur">Tanggal libur nasional atau cuti bersama (satu per baris, format 2026-12-25)</label><textarea id="f-libur" name="libur" placeholder="2026-12-25">'+esc(c.libur.join("\n"))+'</textarea></div>'+
+    '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Simpan pengaturan</button></div></form></section>';
+}
+
+/* ---------- modal ---------- */
+function renderModal(){
+  var m=S.modal,box=$("#modal");
+  if(!m){box.innerHTML="";return;}
+  var h="";
+  if(m.type==="pin"){
+    h='<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="md-t"><div class="stack" style="gap:2px"><h2 id="md-t">PIN sementara</h2><p class="small">'+esc(m.nama)+' · kode <span class="mono">'+esc(m.kode)+'</span></p></div>'+
+      '<div class="pinbox" id="pinbox">'+esc(m.pin)+'</div>'+
+      '<p class="note">Catat atau salin PIN ini sekarang dan berikan ke karyawan. PIN tidak akan tampil lagi. Karyawan akan diminta membuat PIN sendiri saat pertama masuk.</p>'+
+      '<div class="btn-row"><button type="button" class="btn primary" data-act="pin-copy">Salin PIN</button><button type="button" class="btn ghost" data-act="modal-close">Selesai</button></div></div>';
+  }else if(m.type==="emp"){
+    var e=m.emp||{};
+    h='<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="md-t"><h2 id="md-t">'+(e.id?"Ubah karyawan":"Tambah karyawan")+'</h2>'+
+      '<form data-form="emp" class="stack"><input type="hidden" name="id" value="'+esc(e.id||"")+'">'+
+      '<div><label for="m-kode">Kode karyawan (untuk login)</label><input id="m-kode" name="kode" required maxlength="30" autocapitalize="none" spellcheck="false" value="'+esc(e.kode||"")+'" placeholder="Contoh: K-0142"></div>'+
+      '<div><label for="m-nama">Nama lengkap</label><input id="m-nama" name="nama" required maxlength="80" value="'+esc(e.nama||"")+'"></div>'+
+      '<div><label for="m-div">Divisi atau jabatan</label><input id="m-div" name="divisi" maxlength="60" value="'+esc(e.divisi||"")+'"></div>'+
+      '<div class="checks"><label><input id="m-adm" type="checkbox" name="admin"'+(e.admin?" checked":"")+'><span>Admin</span></label><label><input id="m-akt" type="checkbox" name="aktif"'+(e.id?(e.aktif?" checked":""):" checked")+'><span>Aktif</span></label></div>'+
+      '<p class="small" id="m-err" role="alert" style="color:var(--bad)" hidden></p>'+
+      '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Simpan</button><button type="button" class="btn ghost" data-act="modal-close">Batal</button></div></form></div>';
+  }else if(m.type==="edit"){
+    var emp=S.ov.employees.filter(function(x){return x.id===m.emp;})[0];
+    if(!emp){S.modal=null;box.innerHTML="";return;}
+    var rec=(S.ovRecs[m.emp]||{})[m.date]||{},leave=rec.status==="izin"||rec.status==="sakit";
+    h='<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="md-t"><div class="stack" style="gap:2px"><h2 id="md-t">Koreksi absensi</h2><p class="small">'+esc(emp.nama)+' · '+esc(longDate(m.date))+'</p></div>'+
+      '<form data-form="edit" class="stack">'+
+      '<div><label for="e-status">Status</label><select id="e-status" name="status"><option value="auto"'+(!leave?" selected":"")+'>Hadir (terlambat dihitung otomatis dari jam masuk)</option><option value="izin"'+(rec.status==="izin"?" selected":"")+'>Izin</option><option value="sakit"'+(rec.status==="sakit"?" selected":"")+'>Sakit</option></select></div>'+
+      '<div class="grid2"><div><label for="e-in">Jam masuk ('+esc(tzLabel())+')</label><input id="e-in" name="in" type="time" value="'+(rec.in?hm(rec.in):"")+'"></div>'+
+      '<div><label for="e-out">Jam pulang ('+esc(tzLabel())+')</label><input id="e-out" name="out" type="time" value="'+(rec.out?hm(rec.out):"")+'"></div></div>'+
+      '<div><label for="e-note">Catatan</label><input id="e-note" name="note" maxlength="140" value="'+esc(rec.note||"")+'"></div>'+
+      '<p class="small" id="e-err" role="alert" style="color:var(--bad)" hidden></p>'+
+      '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Simpan</button><button type="button" class="btn ghost" data-act="modal-close">Batal</button>'+
+      (rec.status?'<button type="button" class="btn danger" data-act="modal-del">Hapus catatan</button>':"")+'</div></form></div>';
+  }
+  box.innerHTML='<div class="scrim" data-act="modal-scrim">'+h+'</div>';
+  var f=box.querySelector("input:not([type=hidden]),select");if(f&&m.type!=="pin")setTimeout(function(){f.focus();},0);
+}
+
+/* ---------- render ---------- */
+function viewHtml(){
+  var err=S.err?'<div class="banner" role="alert">'+esc(S.err)+'</div>':"",b;
+  if(!S.me)b=viewLogin();
+  else if(S.mustPin)b=viewChangePin();
+  else if(S.tab==="rekap"&&S.me.admin)b=viewRekap();
+  else if(S.tab==="karyawan"&&S.me.admin)b=viewKaryawan();
+  else if(S.tab==="jaringan"&&S.me.admin)b=viewJaringan();
+  else if(S.tab==="pengaturan"&&S.me.admin)b=viewSettings();
+  else b=viewAbsen();
+  return err+b;
+}
+function formFocused(){
+  var a=document.activeElement;
+  return !!(a&&$("#view").contains(a)&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName));
+}
+function render(force){
+  if(!force&&formFocused()){S.pending=true;return;}
+  S.pending=false;
+  renderHeader();
+  $("#view").innerHTML=viewHtml();
+}
+document.addEventListener("focusout",function(){
+  if(!S.pending)return;
+  setTimeout(function(){if(S.pending&&!formFocused())render();},0);
+});
+
+/* ---------- aksi ---------- */
+async function doLogin(f){
+  var fd=new FormData(f);
+  S.kode=String(fd.get("kode")||"").trim();S.pin=String(fd.get("pin")||"");
+  S.err="";S.busy=true;render(true);
+  var r=await loadStatus();
+  S.busy=false;
+  if(!r.ok){S.me=null;S.pin="";S.err=errMsg(r.error);render(true);return;}
+  S.tab="absen";
+  render(true);
+  startPolling();
+}
+async function doChangePin(f){
+  var fd=new FormData(f),a=String(fd.get("new")||""),b=String(fd.get("new2")||"");
+  if(a!==b){S.err="Kedua PIN tidak sama.";render(true);return;}
+  var r=await act(function(){return api("change_pin",{new_pin:a});},"PIN baru tersimpan");
+  if(r&&r.ok){S.pin=a;await loadStatus();}
+  render(true);
+}
+function logout(msg){
+  stopPolling();
+  S.me=null;S.pin="";S.ov=null;S.ovRecs=null;S.todayRec=null;S.recs={};S.tab="absen";S.mustPin=false;S.leaveOpen=false;S.confirmOut=false;S.modal=null;S.loaded=false;
+  S.histMonth=null;S.day=null;S.month=null;S.ovMonth=null;
+  S.err=msg||"";
+  renderModal();render(true);doPing().then(function(){render();});
+}
+async function doAbsen(kind){
+  S.confirmOut=false;
+  var r=await act(function(){return api(kind);},kind==="in"?"Absen masuk tercatat":"Absen pulang tercatat");
+  await refreshAll(true);render(true);
+}
+async function doLeave(f){
+  var fd=new FormData(f);
+  var r=await act(function(){return api("leave",{status:fd.get("jenis")==="sakit"?"sakit":"izin",note:String(fd.get("note")||"").trim()});},"Keterangan tercatat");
+  if(r&&r.ok)S.leaveOpen=false;
+  await refreshAll(true);render(true);
+}
+async function saveSettings(f,enforceOverride){
+  var fd=new FormData(f),c={};
+  c.company=String(fd.get("company")||"").trim().slice(0,60);
+  c.tz=TZ_LABEL[fd.get("tz")]?fd.get("tz"):DEFAULT_CFG.tz;
+  c.start=String(fd.get("start")||"");c.end=String(fd.get("end")||"");
+  c.grace=Math.max(0,Math.min(120,parseInt(fd.get("grace"),10)||0));
+  c.workdays=Array.prototype.map.call(f.querySelectorAll('input[name="wd"]:checked'),function(i){return +i.value;});
+  var seen={};
+  c.libur=String(fd.get("libur")||"").split(/\s+/).filter(function(s){return /^\d{4}-\d{2}-\d{2}$/.test(s)&&!seen[s]&&(seen[s]=1);}).sort();
+  c.enforce=S.cfg.enforce!==false;
+  if(!c.start||!c.end||parseHM(c.start)>=parseHM(c.end)){S.err=ERR.jam_urutan;render(true);return;}
+  if(!c.workdays.length){S.err="Pilih minimal satu hari kerja.";render(true);return;}
+  var r=await act(function(){return api("admin_save_settings",c);},"Pengaturan disimpan");
+  if(r&&r.ok)await refreshAll(true);
+  render(true);
+}
+async function toggleEnforce(){
+  var c=Object.assign({},S.cfg,{enforce:S.cfg.enforce===false});
+  var r=await act(function(){return api("admin_save_settings",{company:c.company,start:c.start,end:c.end,grace:c.grace,workdays:c.workdays,libur:c.libur,tz:c.tz,enforce:c.enforce});},c.enforce?"Pembatasan WiFi aktif":"Pembatasan WiFi nonaktif");
+  if(r&&r.ok)await refreshAll(true);
+  render(true);
+}
+async function addIp(f,current){
+  var fd=new FormData(f),label=String(fd.get("label")||"").trim();
+  var payload=current?{use_current:true,label:label}:{ip:String(fd.get("ip")||"").trim(),label:label};
+  var r=await act(function(){return api("admin_add_ip",payload);},"IP kantor ditambahkan");
+  if(r&&r.ok){await refreshAll(true);}
+  render(true);
+}
+async function delIp(id){
+  var r=await act(function(){return api("admin_del_ip",{id:id});},"IP dihapus");
+  if(r&&r.ok)await refreshAll(true);
+  render(true);
+}
+async function saveEmp(f){
+  var fd=new FormData(f),errEl=$("#m-err");
+  var p={id:String(fd.get("id")||""),kode:String(fd.get("kode")||"").trim(),nama:String(fd.get("nama")||"").trim(),divisi:String(fd.get("divisi")||"").trim(),admin:!!fd.get("admin"),aktif:!!fd.get("aktif")};
+  S.busy=true;
+  var r=await api("admin_save_employee",p);
+  S.busy=false;
+  if(!r.ok){errEl.textContent=errMsg(r.error);errEl.hidden=false;return;}
+  var nama=p.nama,kode=p.kode;
+  S.modal=r.pin?{type:"pin",nama:nama,kode:kode,pin:r.pin}:null;
+  toast(p.id?"Data karyawan tersimpan":"Karyawan ditambahkan");
+  await refreshAll(true);render(true);renderModal();
+}
+async function resetPin(id){
+  var e=S.ov.employees.filter(function(x){return x.id===id;})[0];if(!e)return;
+  var r=await act(function(){return api("admin_reset_pin",{id:id});});
+  if(r&&r.ok){S.modal={type:"pin",nama:e.nama,kode:e.kode,pin:r.pin};await refreshAll(true);}
+  render(true);renderModal();
+}
+async function saveEdit(f){
+  var m=S.modal,fd=new FormData(f),errEl=$("#e-err");
+  var p={emp:m.emp,date:m.date,status:fd.get("status"),in_time:String(fd.get("in")||""),out_time:String(fd.get("out")||""),note:String(fd.get("note")||"").trim()};
+  if(p.status==="auto"&&!p.in_time){errEl.textContent=ERR.jam_masuk;errEl.hidden=false;return;}
+  S.busy=true;
+  var r=await api("admin_edit_record",p);
+  S.busy=false;
+  if(!r.ok){errEl.textContent=errMsg(r.error);errEl.hidden=false;return;}
+  S.modal=null;toast("Koreksi tersimpan");
+  await refreshAll(true);render(true);renderModal();
+}
+async function delRecord(){
+  var m=S.modal;
+  var r=await act(function(){return api("admin_del_record",{emp:m.emp,date:m.date});},"Catatan dihapus");
+  if(r&&r.ok){S.modal=null;await refreshAll(true);}
+  render(true);renderModal();
+}
+
+/* ---------- ekspor CSV ---------- */
+function csvCell(v){
+  var s=String(v==null?"":v);
+  if(/^[=+\-@\t\r]/.test(s))s="'"+s;
+  return /[;"\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+}
+function exportCsv(){
+  var ym=S.month,lines=[["Tanggal","Kode","Nama","Divisi","Masuk","Pulang","Durasi (menit)","Status","Terlambat (menit)","Catatan"]];
+  activeEmps().forEach(function(e){
+    monthDays(ym).forEach(function(d){
+      if(d>S.today)return;
+      var inf=dayInfo(S.ovRecs[e.id],e.since,d);
+      if(["hadir","terlambat","izin","sakit","alpa"].indexOf(inf.key)<0)return;
+      var r=inf.rec||{},w=minutesWorked(r);
+      lines.push([d,e.kode,e.nama,e.divisi||"",r.in?hm(r.in):"",r.out?hm(r.out):"",w!=null?w:"",STATUS[inf.key].label,r.late||0,r.note||""]);
+    });
+  });
+  var csv="﻿"+lines.map(function(l){return l.map(csvCell).join(";");}).join("\r\n");
+  try{
+    var url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"})),a=document.createElement("a");
+    a.href=url;a.download="absensi-"+ym+".csv";document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},2000);
+    toast("Berkas CSV diunduh");
+  }catch(e){toast("Unduhan gagal disiapkan");}
+}
+
+/* ---------- navigasi & event ---------- */
+async function go(tab){
+  S.tab=tab;S.err="";
+  try{if(location.hash.slice(1)!==tab)history.replaceState(null,"","#"+tab);}catch(e){}
+  render(true);
+  if(tab!=="absen"){await refreshAll(true);}
+}
+async function setOvMonthAndLoad(){
+  render(true);
+  var o=await loadOverview(needOvMonth());
+  if(!o.ok)S.err=errMsg(o.error);
+  render(true);
+}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-act]");
+  if(!t)return;
+  var a=t.dataset.act;
+  if(a==="modal-scrim"){if(e.target!==t)return;a="modal-close";}
+  if(a==="tab")return void go(t.dataset.tab);
+  if(a==="logout")return logout();
+  if(a==="recheck"){return void refreshAll(false);}
+  if(a==="in")return void doAbsen("in");
+  if(a==="out"){
+    var n=nowParts();
+    if(isWorkday(S.today)&&n.h*60+n.m<parseHM(S.cfg.end)){S.confirmOut=true;render(true);}else doAbsen("out");
+    return;
+  }
+  if(a==="out-yes")return void doAbsen("out");
+  if(a==="out-cancel"){S.confirmOut=false;return render(true);}
+  if(a==="izin-open"){S.leaveOpen=true;return render(true);}
+  if(a==="izin-cancel"){S.leaveOpen=false;return render(true);}
+  if(a==="hist-prev"){S.histMonth=addMonth(S.histMonth,-1);render(true);return void refreshAll(true);}
+  if(a==="hist-next"){S.histMonth=addMonth(S.histMonth,1);render(true);return void refreshAll(true);}
+  if(a==="sub"){S.sub=t.dataset.sub;return void setOvMonthAndLoad();}
+  if(a==="day-prev"){S.day=addDays(S.day,-1);return void setOvMonthAndLoad();}
+  if(a==="day-next"){S.day=addDays(S.day,1);return void setOvMonthAndLoad();}
+  if(a==="day-today"){S.day=S.today;return void setOvMonthAndLoad();}
+  if(a==="month-prev"){S.month=addMonth(S.month,-1);return void setOvMonthAndLoad();}
+  if(a==="month-next"){S.month=addMonth(S.month,1);return void setOvMonthAndLoad();}
+  if(a==="export")return exportCsv();
+  if(a==="edit"){S.modal={type:"edit",emp:t.dataset.emp,date:t.dataset.date};return renderModal();}
+  if(a==="emp-new"){S.modal={type:"emp",emp:null};return renderModal();}
+  if(a==="emp-edit"){var em=S.ov.employees.filter(function(x){return x.id===t.dataset.id;})[0];S.modal={type:"emp",emp:em};return renderModal();}
+  if(a==="emp-reset"){return void resetPin(t.dataset.id);}
+  if(a==="ip-del")return void delIp(t.dataset.id);
+  if(a==="enforce")return void toggleEnforce();
+  if(a==="pin-copy")return copyText(S.modal&&S.modal.pin||"");
+  if(a==="modal-close"){S.modal=null;return renderModal();}
+  if(a==="modal-del")return void delRecord();
+});
+document.addEventListener("submit",function(e){
+  var f=e.target.closest("form[data-form]");
+  if(!f)return;
+  e.preventDefault();
+  var k=f.dataset.form;
+  if(k==="login")doLogin(f);
+  else if(k==="pin")doChangePin(f);
+  else if(k==="leave")doLeave(f);
+  else if(k==="settings")saveSettings(f);
+  else if(k==="ip-current")addIp(f,true);
+  else if(k==="ip-manual")addIp(f,false);
+  else if(k==="emp")saveEmp(f);
+  else if(k==="edit")saveEdit(f);
+});
+document.addEventListener("change",function(e){
+  if(e.target.id==="f-day"&&/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)){S.day=e.target.value;setOvMonthAndLoad();}
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&S.modal){S.modal=null;renderModal();}});
+
+/* ---------- jam berjalan & penyegaran ---------- */
+var pollT=null;
+function tick(){
+  if(!S.me||S.mustPin)return;
+  var p=nowParts(),el=$("#clock");
+  if(el)el.textContent=pad(p.h)+":"+pad(p.m)+":"+pad(p.s);
+  var nm=$("#nowMark");
+  if(nm)nm.style.left=rulerPct()(p.h*60+p.m+p.s/60)+"%";
+  if(S.today&&p.ymd!==S.today&&!S.busy){S.confirmOut=false;refreshAll(true);}
+}
+function startPolling(){
+  stopPolling();
+  pollT=setInterval(function(){
+    if(document.hidden||!S.me||S.busy||S.modal||S.mustPin)return;
+    if(formFocused())return;
+    refreshAll(true);
+  },20000);
+}
+function stopPolling(){if(pollT){clearInterval(pollT);pollT=null;}}
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&S.me&&!S.busy&&!S.modal&&!S.mustPin&&!formFocused())refreshAll(true);});
+window.addEventListener("online",function(){if(S.me&&!S.mustPin)refreshAll(true);else doPing().then(function(){render();});});
+
+/* ---------- mulai ---------- */
+render(true);
+setInterval(tick,1000);
+doPing().then(function(){if(!S.me)render();});
+})();
+</script>
+</body>
+</html>
