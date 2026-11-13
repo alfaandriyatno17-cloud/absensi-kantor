@@ -7,35 +7,42 @@
 <title>Absensi Karyawan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
 /* Tata letak: kartu jam besar (jam server + penggaris jam kerja) di kiri, tombol aksi di kanan; status jaringan kantor selalu terlihat di header. */
 :root{
-  --bg:#F2F5F9; --surface:#FFFFFF; --surface-2:#E9EEF5; --fg:#14202C; --muted:#586677; --line:#D8DFE9;
-  --accent:#1F4FD8; --accent-fg:#FFFFFF; --accent-soft:#E2EAFF;
-  --ok:#0F7A57; --ok-bg:#DAF2E8; --warn:#8F5200; --warn-bg:#FBE9C6; --bad:#B0261A; --bad-bg:#FCE2DE;
-  --info:#44546A; --info-bg:#E4E9F0; --sick:#0C6E69; --sick-bg:#D5F0EC;
-  --scrim:rgba(10,16,24,.55);
-  --font:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --bg:#F3F5F2; --surface:#FFFFFF; --surface-2:#EAEFEC; --fg:#14211F; --muted:#5A6A67; --line:#DCE3E0;
+  --accent:#0F5E73; --accent-fg:#FFFFFF; --accent-soft:#DAEDF2; --brass:#A97A28; --brass-soft:#F3E6C6;
+  --ok:#1B7F4F; --ok-bg:#DCF1E4; --warn:#8F5200; --warn-bg:#FBE9C6; --bad:#B0261A; --bad-bg:#FCE2DE;
+  --info:#44546A; --info-bg:#E4E9F0; --sick:#6240A8; --sick-bg:#E9E2F6;
+  --scrim:rgba(8,18,20,.55);
+  --shadow:0 1px 2px rgba(10,48,58,.06),0 18px 40px -20px rgba(10,48,58,.28);
+  --glow:rgba(15,94,115,.10);
+  --font:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0E141B; --surface:#161E27; --surface-2:#1E2833; --fg:#E7ECF2; --muted:#93A1B2; --line:#2A3642;
-    --accent:#7F9CFF; --accent-fg:#0B1220; --accent-soft:#1D2A52;
-    --ok:#4CD0A0; --ok-bg:#12382C; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
-    --info:#AEB9C8; --info-bg:#27313D; --sick:#58D3C6; --sick-bg:#10363A;
+    --bg:#0A1316; --surface:#111E22; --surface-2:#182A2F; --fg:#E8EFEE; --muted:#8FA3A6; --line:#223338;
+    --accent:#6CC4DA; --accent-fg:#06161B; --accent-soft:#12323B; --brass:#D7B16A; --brass-soft:#3A2F16;
+    --ok:#52D49A; --ok-bg:#11352A; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
+    --info:#AEB9C8; --info-bg:#27313D; --sick:#B7A3F0; --sick-bg:#2B2347;
     --scrim:rgba(0,0,0,.65);
+    --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 22px 44px -22px rgba(0,0,0,.7);
+    --glow:rgba(108,196,218,.10);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0E141B; --surface:#161E27; --surface-2:#1E2833; --fg:#E7ECF2; --muted:#93A1B2; --line:#2A3642;
-  --accent:#7F9CFF; --accent-fg:#0B1220; --accent-soft:#1D2A52;
-  --ok:#4CD0A0; --ok-bg:#12382C; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
-  --info:#AEB9C8; --info-bg:#27313D; --sick:#58D3C6; --sick-bg:#10363A;
+  --bg:#0A1316; --surface:#111E22; --surface-2:#182A2F; --fg:#E8EFEE; --muted:#8FA3A6; --line:#223338;
+  --accent:#6CC4DA; --accent-fg:#06161B; --accent-soft:#12323B; --brass:#D7B16A; --brass-soft:#3A2F16;
+  --ok:#52D49A; --ok-bg:#11352A; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
+  --info:#AEB9C8; --info-bg:#27313D; --sick:#B7A3F0; --sick-bg:#2B2347;
   --scrim:rgba(0,0,0,.65);
+  --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 22px 44px -22px rgba(0,0,0,.7);
+  --glow:rgba(108,196,218,.10);
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -74,7 +81,7 @@ p{margin:0}
   .hero-clock{border-right:0;border-bottom:1px solid var(--line)}
 }
 .login{max-width:420px;margin:0 auto;width:100%}
-.eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.eyebrow{font-size:13px;color:var(--muted);font-weight:500}
 .clock{font-family:var(--mono);font-weight:500;font-size:clamp(40px,11vw,64px);line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:6px 0 22px}
 
 .ruler{margin-bottom:10px}
@@ -141,7 +148,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 table{border-collapse:collapse;width:100%;min-width:640px}
 th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
-th{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;background:var(--surface-2)}
+th{font-size:12.5px;color:var(--muted);font-weight:600;background:var(--surface-2)}
 tr:last-child td{border-bottom:0}
 td.name{white-space:normal;min-width:170px}
 td.num,th.num{text-align:right}
@@ -177,13 +184,81 @@ textarea{min-height:96px;resize:vertical}
 .scrim{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
 .dialog{background:var(--surface);border:1px solid var(--line);border-radius:14px;width:min(480px,100%);max-height:100%;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:500;z-index:30;max-width:calc(100% - 32px);text-align:center}
+
+/* ===== Tampilan: petrol + kuningan, huruf serif untuk judul dan jam ===== */
+body{background:var(--bg);background-image:radial-gradient(900px 420px at 12% -8%,var(--glow),transparent 70%);background-repeat:no-repeat;font-size:15px;line-height:1.55}
+h2{font-family:var(--serif);font-weight:500;font-size:21px;letter-spacing:-.01em}
+.wrap{gap:24px}
+#view{gap:24px}
+.top{padding-bottom:18px;border-bottom:1px solid var(--line)}
+.logo{width:40px;height:40px;filter:drop-shadow(0 6px 10px var(--glow))}
+.logo circle,.logo path{stroke:var(--accent-fg)}
+.brand-name{font-family:var(--serif);font-weight:500;font-size:22px;letter-spacing:-.01em;line-height:1.15}
+.brand-sub{font-size:13px}
+.tabs{background:transparent;border:1px solid var(--line);padding:3px;gap:2px}
+.tabs button{font-weight:600;font-size:13.5px;padding:7px 15px;color:var(--muted)}
+.tabs button:hover{color:var(--fg)}
+.tabs button[aria-current="page"]{background:var(--fg);color:var(--bg);box-shadow:none}
+.card{border-radius:20px;border-color:var(--line)}
+.hero{box-shadow:var(--shadow);overflow:hidden}
+.hero-clock{background:radial-gradient(120% 100% at 0% 0%,var(--accent-soft),transparent 62%);padding:30px 30px 24px}
+.hero-act{padding:30px;justify-content:center;background:var(--surface)}
+.clock{font-family:var(--serif);font-weight:400;font-size:clamp(46px,13vw,76px);letter-spacing:-.015em;line-height:1;margin:8px 0 28px;font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum","lnum"}
+.track{height:8px}
+.band{background:var(--accent-soft);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent)}
+.grace{background:var(--ok-bg)}
+.now{background:var(--brass);width:3px;top:-7px;bottom:-7px}
+.ticks{font-size:12px}
+.mark{width:16px;height:16px}
+.kv dd{font-family:var(--serif);font-size:24px;font-weight:500}
+.btn{border-radius:12px;font-weight:600;border-color:var(--line)}
+.btn.primary{background:var(--accent);border-color:var(--accent);box-shadow:0 10px 22px -10px color-mix(in srgb,var(--accent) 75%,transparent)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--accent) 88%,var(--fg))}
+.btn:hover:not(:disabled):not(.primary){background:var(--surface-2)}
+.btn.big{min-height:64px;font-size:17px;border-radius:14px}
+.chip{padding:3px 11px;font-size:12.5px}
+.strip{display:flex;flex-wrap:wrap;overflow:hidden;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.strip div{flex:1 1 130px;padding:14px 18px;background:transparent;box-shadow:-1px -1px 0 0 var(--line)}
+.strip b{font-family:var(--serif);font-size:32px;font-weight:500;line-height:1.1;letter-spacing:-.01em}
+.strip span{font-size:12.5px}
+.strip.board div:last-child b{color:var(--bad)}
+.strip.board div:nth-child(2) b{color:var(--ok)}
+.list,.rows,.tablewrap{border-radius:18px;border-color:var(--line)}
+.item{padding:14px 18px;gap:10px 14px}
+.item .who{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.item .who .tx{min-width:0}
+.row{padding:14px 18px}
+.av{flex:none;width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:15px;letter-spacing:.02em}
+.rt{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.av.done{background:var(--ok-bg);color:var(--ok)}
+.prog{padding:20px 22px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+.prog-t{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.prog-n{font-family:var(--serif);font-size:44px;font-weight:400;line-height:1;letter-spacing:-.02em}
+.prog-n small{font-size:22px;color:var(--muted);font-weight:400;margin-left:4px}
+.bar{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--ok))}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .6s cubic-bezier(.2,.7,.2,1)}}
+input,select,textarea{border-radius:10px;background:var(--surface);transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.login{max-width:440px;margin-top:6vh;padding:30px;box-shadow:var(--shadow)}
+.dialog{border-radius:20px;box-shadow:var(--shadow);padding:24px}
+.pinbox{border-radius:14px;color:var(--brass);background:var(--brass-soft)}
+.banner{border-radius:14px}
+.empty{border-radius:18px}
+.toast{border-radius:12px}
+@media (max-width:720px){
+  .hero-clock{padding:24px 22px 20px}.hero-act{padding:22px}
+  .strip b{font-size:28px}
+  .brand-name{font-size:20px}
+  .prog-n{font-size:38px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect x="1" y="1" width="34" height="34" rx="9" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="8" stroke="currentColor" stroke-width="2"/><path d="M18 13v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="logo" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect x="1" y="1" width="34" height="34" rx="11" fill="currentColor"/><circle cx="18" cy="18" r="8" stroke="currentColor" stroke-width="2"/><path d="M18 13v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div>
         <div class="brand-name" id="brandName">Absensi Karyawan</div>
         <div class="brand-sub" id="who"></div>
@@ -535,13 +610,15 @@ function viewKehadiran(){
   var done=list.filter(function(x){return x.status;}),todo=list.filter(function(x){return !x.status;});
   var hadir=done.filter(function(x){return x.status==="hadir"||x.status==="terlambat";}).length;
   var izin=done.filter(function(x){return x.status==="izin"||x.status==="sakit";}).length;
-  var strip='<div class="strip"><div><b>'+list.length+'</b><span>Karyawan wajib absen</span></div><div><b>'+hadir+'</b><span>Hadir</span></div><div><b>'+izin+'</b><span>Izin / sakit</span></div><div><b>'+todo.length+'</b><span>Belum absen</span></div></div>';
+  var pct=list.length?Math.round(done.length/list.length*100):0;
+  var prog='<div class="card prog"><div class="prog-t"><span class="prog-n">'+done.length+'<small>/ '+list.length+'</small></span><span class="muted">karyawan sudah absen hari ini</span></div><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'"><i style="width:'+pct+'%"></i></div></div>';
+  var strip='<div class="strip board"><div><b>'+list.length+'</b><span>Wajib absen</span></div><div><b>'+hadir+'</b><span>Hadir</span></div><div><b>'+izin+'</b><span>Izin / sakit</span></div><div><b>'+todo.length+'</b><span>Belum absen</span></div></div>';
   function row(x,isDone){
-    var right=isDone?chip(x.status)+'<span class="small mono">'+(x.in?hm(x.in):"–")+' – '+(x.out?hm(x.out):"–")+'</span>':chip("belum");
-    return '<li class="item"><div class="who"><strong>'+esc(x.nama)+'</strong><div class="small">'+esc(x.divisi||"Tanpa divisi")+'</div></div><div class="btn-row">'+right+'</div></li>';
+    var right=isDone?'<div class="rt">'+chip(x.status)+(x.in?'<span class="small mono">'+(x.out?hm(x.in)+' – '+hm(x.out):'Masuk '+hm(x.in))+'</span>':"")+'</div>':chip("belum");
+    return '<li class="item"><div class="who"><span class="av'+(isDone?" done":"")+'" aria-hidden="true">'+esc((x.nama||"?").trim().charAt(0).toUpperCase())+'</span><div class="tx"><strong>'+esc(x.nama)+'</strong><div class="small">'+esc(x.divisi||"Tanpa divisi")+'</div></div></div><div class="btn-row">'+right+'</div></li>';
   }
   var off=isWorkday(S.today)?"":'<div class="banner" role="status">Hari ini bukan hari kerja.</div>';
-  return '<section class="stack"><div class="sec-h"><h2>Kehadiran '+esc(longDate(S.today))+'</h2></div>'+off+strip+
+  return '<section class="stack"><div class="sec-h"><h2>Kehadiran '+esc(longDate(S.today))+'</h2></div>'+off+prog+strip+
     '<div class="stack"><h2>Belum absen ('+todo.length+')</h2>'+(todo.length?'<ul class="list">'+todo.map(function(x){return row(x,false);}).join("")+'</ul>':'<div class="empty">Semua karyawan sudah absen.</div>')+'</div>'+
     '<div class="stack"><h2>Sudah absen ('+done.length+')</h2>'+(done.length?'<ul class="list">'+done.map(function(x){return row(x,true);}).join("")+'</ul>':'<div class="empty">Belum ada yang absen hari ini.</div>')+'</div>'+
     '<p class="small">Diperbarui otomatis setiap 20 detik.</p></section>';
@@ -594,8 +671,8 @@ function rekapBulanan(){
 function viewKaryawan(){
   if(!S.ov)return ovLoading();
   var items=S.ov.employees.map(function(e){
-    return '<li class="item"><div class="who"><strong>'+esc(e.nama)+'</strong> <span class="small mono">'+esc(e.kode)+'</span>'+
-      '<div class="small">'+esc(e.divisi||"Tanpa divisi")+'</div></div>'+
+    return '<li class="item"><div class="who"><span class="av" aria-hidden="true">'+esc((e.nama||"?").trim().charAt(0).toUpperCase())+'</span><div class="tx"><strong>'+esc(e.nama)+'</strong> <span class="small mono">'+esc(e.kode)+'</span>'+
+      '<div class="small">'+esc(e.divisi||"Tanpa divisi")+'</div></div></div>'+
       '<div class="btn-row">'+(e.admin?'<span class="chip info">Admin</span>':"")+(e.aktif?"":'<span class="chip none">Nonaktif</span>')+(e.wajib===false?'<span class="chip none">Tidak wajib absen</span>':"")+(e.must_change_pin?'<span class="chip warn">PIN sementara</span>':"")+
       '<button type="button" class="btn sm" data-act="emp-edit" data-id="'+esc(e.id)+'">Ubah</button>'+
       '<button type="button" class="btn sm" data-act="emp-reset" data-id="'+esc(e.id)+'">Reset PIN</button></div></li>';
