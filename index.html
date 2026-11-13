@@ -7,42 +7,45 @@
 <title>Absensi Karyawan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Poppins:wght@300;400;500;600;700&display=swap">
 <style>
 /* Tata letak: kartu jam besar (jam server + penggaris jam kerja) di kiri, tombol aksi di kanan; status jaringan kantor selalu terlihat di header. */
 :root{
-  --bg:#F3F5F2; --surface:#FFFFFF; --surface-2:#EAEFEC; --fg:#14211F; --muted:#5A6A67; --line:#DCE3E0;
-  --accent:#0F5E73; --accent-fg:#FFFFFF; --accent-soft:#DAEDF2; --brass:#A97A28; --brass-soft:#F3E6C6;
-  --ok:#1B7F4F; --ok-bg:#DCF1E4; --warn:#8F5200; --warn-bg:#FBE9C6; --bad:#B0261A; --bad-bg:#FCE2DE;
-  --info:#44546A; --info-bg:#E4E9F0; --sick:#6240A8; --sick-bg:#E9E2F6;
-  --scrim:rgba(8,18,20,.55);
-  --shadow:0 1px 2px rgba(10,48,58,.06),0 18px 40px -20px rgba(10,48,58,.28);
-  --glow:rgba(15,94,115,.10);
-  --font:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --bg:#F3F8F4; --surface:#FFFFFF; --surface-2:#EAF2EC; --fg:#14231A; --muted:#58695E; --line:#DCE7DF;
+  --accent:#0E8F31; --accent-2:#19B34A; --accent-fg:#FFFFFF; --accent-soft:#DCF3E2; --brass:#A97A28; --brass-soft:#F5EACB;
+  --hero-1:#18A83D; --hero-2:#0A7826;
+  --ok:#0E8F31; --ok-bg:#DCF3E2; --warn:#8F5200; --warn-bg:#FBE9C6; --bad:#BE2F1F; --bad-bg:#FCE2DE;
+  --info:#41566B; --info-bg:#E3EAF1; --sick:#6240A8; --sick-bg:#E9E2F6;
+  --scrim:rgba(6,20,10,.55);
+  --shadow:0 1px 2px rgba(10,60,25,.06),0 18px 40px -22px rgba(10,90,35,.40);
+  --glow:rgba(25,179,74,.17);
+  --font:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0A1316; --surface:#111E22; --surface-2:#182A2F; --fg:#E8EFEE; --muted:#8FA3A6; --line:#223338;
-    --accent:#6CC4DA; --accent-fg:#06161B; --accent-soft:#12323B; --brass:#D7B16A; --brass-soft:#3A2F16;
-    --ok:#52D49A; --ok-bg:#11352A; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
+    --bg:#08120B; --surface:#0F1D13; --surface-2:#16281B; --fg:#E6F2E9; --muted:#8EA595; --line:#20352A;
+    --accent:#3FD46B; --accent-2:#3FD46B; --accent-fg:#04140A; --accent-soft:#123A20; --brass:#E2B65B; --brass-soft:#3A2F16;
+    --hero-1:#148A35; --hero-2:#0A5A22;
+    --ok:#4ADE80; --ok-bg:#12351F; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
     --info:#AEB9C8; --info-bg:#27313D; --sick:#B7A3F0; --sick-bg:#2B2347;
     --scrim:rgba(0,0,0,.65);
     --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 22px 44px -22px rgba(0,0,0,.7);
-    --glow:rgba(108,196,218,.10);
+    --glow:rgba(63,212,107,.12);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0A1316; --surface:#111E22; --surface-2:#182A2F; --fg:#E8EFEE; --muted:#8FA3A6; --line:#223338;
-  --accent:#6CC4DA; --accent-fg:#06161B; --accent-soft:#12323B; --brass:#D7B16A; --brass-soft:#3A2F16;
-  --ok:#52D49A; --ok-bg:#11352A; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
+  --bg:#08120B; --surface:#0F1D13; --surface-2:#16281B; --fg:#E6F2E9; --muted:#8EA595; --line:#20352A;
+  --accent:#3FD46B; --accent-2:#3FD46B; --accent-fg:#04140A; --accent-soft:#123A20; --brass:#E2B65B; --brass-soft:#3A2F16;
+  --hero-1:#148A35; --hero-2:#0A5A22;
+  --ok:#4ADE80; --ok-bg:#12351F; --warn:#F2B45A; --warn-bg:#3F2E0E; --bad:#FF8A7A; --bad-bg:#431B17;
   --info:#AEB9C8; --info-bg:#27313D; --sick:#B7A3F0; --sick-bg:#2B2347;
   --scrim:rgba(0,0,0,.65);
   --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 22px 44px -22px rgba(0,0,0,.7);
-  --glow:rgba(108,196,218,.10);
+  --glow:rgba(63,212,107,.12);
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -291,27 +294,117 @@ input[type=file]{padding:9px 10px;font-size:14px}
   .cal-c{min-height:62px;padding:5px 3px;align-items:center;text-align:center;border-radius:10px}
   .cal-c .n{font-size:16px}.cal-c .l{font-size:10px}.cal-c .t{display:none}
 }
+
+/* ===== Tampilan aplikasi: hijau, kartu bulat, navigasi bawah ===== */
+body{font-family:var(--font);background:var(--bg);background-image:linear-gradient(180deg,var(--glow) 0,transparent 360px);background-repeat:no-repeat;font-size:14.5px}
+.wrap{max-width:560px;gap:18px}
+body.wide .wrap{max-width:1000px}
+body.has-nav .wrap{padding-bottom:112px}
+h2{font-family:var(--font);font-weight:600;font-size:18px;letter-spacing:-.01em}
+.top{flex-wrap:nowrap;padding:4px 0 0;border:0}
+.brand-name{font-family:var(--font);font-weight:700;font-size:26px;letter-spacing:-.03em;color:var(--accent);line-height:1.1}
+.brand-sub{font-size:13px}
+.top-r{flex-wrap:nowrap;gap:8px}
+.net{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:6px 10px}
+.net:empty{display:none}
+.net .small{font-family:var(--mono);font-size:12px}
+.mebtn{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent-soft)}
+.mebtn .av{width:42px;height:42px;font-size:16px}
+.card{border-radius:22px}
+.tabs{background:transparent;border:1px solid var(--line);padding:3px}
+.tabs button[aria-current="page"]{background:var(--accent);color:var(--accent-fg);box-shadow:none}
+.btn{border-radius:14px}
+.btn.big{min-height:56px;font-size:16px;border-radius:16px}
+.btn.primary{background:var(--accent);border-color:var(--accent);box-shadow:0 10px 22px -12px color-mix(in srgb,var(--accent) 80%,transparent)}
+.strip b{font-weight:600;font-size:28px}
+.ic{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.greet{position:relative;overflow:hidden;color:#fff;background:linear-gradient(135deg,var(--hero-1),var(--hero-2));border-radius:28px;padding:24px 22px 16px;box-shadow:var(--shadow)}
+.greet::before{content:"";position:absolute;right:-46px;top:-60px;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.30),rgba(255,255,255,0) 70%)}
+.greet::after{content:"";position:absolute;left:-60px;bottom:-90px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.14),rgba(255,255,255,0) 70%)}
+.greet>*{position:relative;z-index:1}
+.greet-t{font-size:26px;font-weight:400;line-height:1.2;letter-spacing:-.01em}
+.greet-t b{font-weight:700}
+.greet-s{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:14.5px;opacity:.95}
+.greet-s .ic{width:18px;height:18px}
+.quick{display:flex;gap:4px;margin-top:20px}
+.quick button{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;color:#fff;font:inherit;font-size:14px;font-weight:500;cursor:pointer;padding:8px 0;border-radius:14px}
+.quick .ic{width:34px;height:34px;stroke-width:1.9}
+.quick button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.quick .badge{position:absolute;top:2px;right:calc(50% - 30px);margin:0;background:#fff;color:var(--hero-2)}
+
+.sh{display:flex;align-items:center;gap:10px}
+.sh .ic{width:26px;height:26px;color:var(--accent)}
+.hscroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:4px max(16px,env(safe-area-inset-left,0px)) 12px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.act{flex:0 0 min(90%,430px);scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0;color:inherit;text-decoration:none;box-shadow:var(--shadow)}
+.act.cutic{flex-basis:min(66%,300px)}
+.act-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.act-h h3{font-size:17px;font-weight:600;line-height:1.25;margin:0}
+.pres-t{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:14px}
+.pl{font-size:13.5px;color:var(--muted)}.pl b{color:var(--fg);font-weight:600}
+.pt{font-size:34px;font-weight:300;letter-spacing:.01em;line-height:1.15;font-variant-numeric:tabular-nums}
+.pres-t .r{text-align:right}
+.arrows{color:var(--line);font-size:24px;letter-spacing:-3px;padding-bottom:10px;user-select:none}
+.pres-n{color:var(--muted)}
+.pres-a{display:flex;flex-direction:column;gap:10px}
+.cic{width:42px;height:42px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.cic .ic{width:22px;height:22px}
+.cutic .act-h{justify-content:flex-start;align-items:center;gap:12px}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+.tl li{position:relative;display:flex;gap:12px;align-items:flex-start;font-size:15px}
+.tl li b{font-weight:600}
+.tl i{width:12px;height:12px;border-radius:50%;border:2px solid var(--line);background:var(--surface);margin-top:6px;flex:none;position:relative;z-index:1}
+.tl li.on i{background:var(--accent-2);border-color:var(--accent-2);box-shadow:0 0 0 4px var(--accent-soft)}
+.tl li:not(:last-child)::after{content:"";position:absolute;left:5px;top:20px;bottom:-18px;width:2px;background:var(--line)}
+.link-btn{color:var(--accent);font-weight:600;font-size:14px}
+.pt1{font-size:20px;font-weight:600;margin:0;letter-spacing:-.01em}
+body.has-nav .toast{bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+
+.pagehead{display:flex;align-items:center;gap:12px}
+.pagehead h1{font-size:20px;font-weight:600;margin:0;letter-spacing:-.01em}
+.back{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--fg);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.back .ic{width:22px;height:22px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:16px;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:inherit;font:inherit;cursor:pointer;box-shadow:var(--shadow)}
+.tile .cic{margin-bottom:8px}
+.tile b{font-size:15px;font-weight:600}.tile span.d{font-size:12.5px;color:var(--muted)}
+.tile .badge{position:absolute;top:14px;right:14px;margin:0}
+.prof{display:flex;align-items:center;gap:18px;padding:20px;box-shadow:var(--shadow)}
+.avbtn{position:relative;border:0;background:none;padding:0 0 10px;cursor:pointer;flex:none}
+.avbtn .cam{position:absolute;bottom:0;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--accent-fg);font-size:11px;font-weight:600;padding:1px 10px;border-radius:999px;border:2px solid var(--surface)}
+.prof-t{display:flex;flex-direction:column;gap:4px;min-width:0;align-items:flex-start}
+.prof-t h2{overflow-wrap:anywhere}
+
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -10px 30px -18px rgba(10,60,25,.35);padding:8px max(12px,env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-right,0px))}
+.bnav-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 88px 1fr 1fr;align-items:end}
+body.wide .bnav-in{max-width:1000px}
+.bnav .ni{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;color:var(--muted);font:inherit;font-size:12.5px;font-weight:500;padding:6px 0;cursor:pointer;border-radius:12px}
+.bnav .ni .ic{width:26px;height:26px}
+.bnav .ni[aria-current="page"]{color:var(--accent);font-weight:700}
+.fab{justify-self:center;width:62px;height:62px;margin:-34px 0 6px;border:0;border-radius:20px;transform:rotate(45deg);background:linear-gradient(135deg,var(--hero-1),var(--hero-2));color:#fff;box-shadow:0 14px 26px -10px rgba(10,120,40,.75),0 0 0 6px var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fab .ic{transform:rotate(-45deg);width:30px;height:30px;stroke-width:2}
+.bnav button:focus-visible,.back:focus-visible,.tile:focus-visible,.act:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:420px){.greet-t{font-size:23px}.pt{font-size:30px}.brand-name{font-size:24px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect x="1" y="1" width="34" height="34" rx="11" fill="currentColor"/><circle cx="18" cy="18" r="8" stroke="currentColor" stroke-width="2"/><path d="M18 13v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div>
         <div class="brand-name" id="brandName">Absensi Karyawan</div>
         <div class="brand-sub" id="who"></div>
       </div>
     </div>
     <div class="top-r">
-      <div id="net"></div>
-      <nav class="tabs" id="tabs" aria-label="Menu" hidden></nav>
-      <button type="button" class="mebtn" id="meBtn" data-act="foto-open" aria-label="Ubah foto profil" hidden></button>
-      <button type="button" class="btn sm ghost" id="logoutBtn" data-act="logout" hidden>Keluar</button>
+      <button type="button" class="mebtn" id="meBtn" data-act="tab" data-tab="profil" aria-label="Profil saya" hidden></button>
     </div>
   </header>
+  <div id="net" class="net"></div>
   <main id="view" aria-live="polite"></main>
 </div>
+<nav id="bnav" class="bnav" aria-label="Menu utama" hidden></nav>
 <div id="modal"></div>
 <div id="toast" class="toast" role="status" hidden></div>
 
@@ -369,11 +462,29 @@ var ERR={
   tidak_bisa_batal:"Cuti ini tidak bisa dibatalkan lagi."
 };
 
+function svg(d){return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+d+'</svg>';}
+var IC={
+  home:svg('<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'),
+  doc:svg('<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>'),
+  users:svg('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .6 3.3 2.3 3.5 5.2"/>'),
+  user:svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.2 4-6.5 8-6.5s7.2 2.3 8 6.5"/>'),
+  clock:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+  cal:svg('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/>'),
+  send:svg('<path d="M21 3L3 10.5l7 2.5 2.5 7z"/><path d="M10 13L21 3"/>'),
+  grid:svg('<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>'),
+  brief:svg('<rect x="3" y="7" width="18" height="13" rx="3"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>'),
+  pulse:svg('<path d="M3 12h4l3-8 4 16 3-8h4"/>'),
+  back:svg('<path d="M15 5l-7 7 7 7"/>'),
+  money:svg('<rect x="3" y="6" width="18" height="12" rx="3"/><circle cx="12" cy="12" r="2.5"/>'),
+  wifi:svg('<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1"/>'),
+  gear:svg('<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>'),
+  table:svg('<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M9 10v10"/>')
+};
 var S={kode:"",pin:"",me:null,cfg:Object.assign({},DEFAULT_CFG),ip:null,kantor:null,pingDone:false,
   offset:0,today:null,recs:{},todayRec:null,since:null,
   tab:"absen",sub:"harian",day:null,month:null,histMonth:null,ov:null,ovMonth:null,
   busy:false,confirmOut:false,leaveOpen:false,err:"",modal:null,pending:false,mustPin:false,loaded:false,
-  sch:null,schRecs:{},schMonth:null,schEmp:null,adminLeaves:null,lvSelf:[],lvAll:{}};
+  sch:null,schRecs:{},schMonth:null,schEmp:null,mine:null,adminLeaves:null,lvSelf:[],lvAll:{}};
 
 function $(s){return document.querySelector(s);}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
@@ -544,6 +655,10 @@ async function refreshAll(silent){
     var b=await api("board",{});
     if(b.ok)S.board=b;else if(!silent)S.err=errMsg(b.error);
   }
+  if(S.me&&!S.mustPin&&S.today&&(S.tab==="absen"||S.tab==="pengajuan")){
+    var mi=await api("schedule",{month:monthOf(S.today)});
+    if(mi.ok)S.mine=mi;
+  }
   if(S.me&&S.tab==="jadwal"&&!S.mustPin){
     var sc=await api("schedule",{month:S.schMonth,emp:S.me.admin&&S.schEmp?S.schEmp:undefined});
     if(sc.ok&&sc.month===S.schMonth){S.sch=sc;S.schRecs=mapOf(sc.records);}else if(!sc.ok&&!silent)S.err=errMsg(sc.error);
@@ -552,7 +667,7 @@ async function refreshAll(silent){
     var al=await api("admin_leave_list",{});
     if(al.ok)S.adminLeaves=al.leaves;
   }
-  if(S.me&&S.me.admin&&S.tab!=="absen"&&S.tab!=="kehadiran"){
+  if(S.me&&S.me.admin&&["rekap","karyawan","jaringan","pengaturan","cuti","jadwal"].indexOf(S.tab)>=0){
     var m=S.tab==="rekap"?needOvMonth():(S.ovMonth||monthOf(S.today));
     var o=await loadOverview(m);
     if(!o.ok&&!silent)S.err=errMsg(o.error);
@@ -571,25 +686,26 @@ async function act(fn,okMsg){
 }
 
 /* ---------- header ---------- */
+var NAV_HOME=["jadwal","pengajuan","kelola","cuti","rekap","karyawan","jaringan","pengaturan"];
+var NAV_WIDE=["rekap","karyawan","jaringan","pengaturan","cuti"];
 function renderHeader(){
   $("#brandName").textContent=S.cfg.company||"Absensi Karyawan";
-  var who=[];
-  if(S.me){who.push(S.me.nama);if(S.me.admin)who.push("Admin");}
-  $("#who").textContent=who.join(" · ")||"Absen masuk dan pulang dari WiFi kantor";
-  var nav=$("#tabs");
-  if(S.me&&!S.mustPin){
-    nav.hidden=false;
-    var tabs=S.me.admin?[["absen","Absen"],["kehadiran","Kehadiran"],["jadwal","Jadwal"],["cuti","Cuti"],["rekap","Rekap"],["karyawan","Karyawan"],["jaringan","Jaringan"],["pengaturan","Pengaturan"]]:[["absen","Absen"],["kehadiran","Kehadiran"],["jadwal","Jadwal"]];
-    var pend=(S.adminLeaves||[]).filter(function(l){return l.status==="diajukan";}).length;
-    nav.innerHTML=tabs.map(function(t){
-      return '<button type="button" data-act="tab" data-tab="'+t[0]+'"'+(S.tab===t[0]?' aria-current="page"':"")+'>'+t[1]+(t[0]==="cuti"&&pend?'<span class="badge" aria-label="'+pend+' menunggu">'+pend+'</span>':"")+'</button>';
-    }).join("");
-  }else nav.hidden=true;
-  $("#logoutBtn").hidden=!S.me;
-  var mb=$("#meBtn");mb.hidden=!(S.me&&!S.mustPin);
+  $("#who").textContent=S.me?"":"Absen masuk dan pulang dari WiFi kantor";
+  var live=!!(S.me&&!S.mustPin);
+  document.body.classList.toggle("has-nav",live);
+  document.body.classList.toggle("wide",live&&NAV_WIDE.indexOf(S.tab)>=0);
+  var mb=$("#meBtn");mb.hidden=!live;
   if(S.me)mb.innerHTML=avatar(S.me.nama,S.me.id,S.me.foto);
+  var nav=$("#bnav");
+  if(live){
+    var cur=NAV_HOME.indexOf(S.tab)>=0?"absen":S.tab;
+    function ni(tab,ic,label){return '<button type="button" class="ni" data-act="tab" data-tab="'+tab+'"'+(cur===tab?' aria-current="page"':"")+'>'+ic+'<span>'+label+'</span></button>';}
+    nav.hidden=false;
+    nav.innerHTML='<div class="bnav-in">'+ni("absen",IC.home,"Beranda")+ni("riwayat",IC.doc,"Riwayat")+
+      '<button type="button" class="fab" data-act="fab" aria-label="Absen sekarang">'+IC.clock+'</button>'+ni("kehadiran",IC.users,"Kehadiran")+ni("profil",IC.user,"Profil")+'</div>';
+  }else nav.hidden=true;
   var net=$("#net"),h="";
-  if(S.pingDone||S.me){
+  if((S.pingDone||S.me)&&(!S.me||S.tab==="absen")){
     if(S.cfg.enforce===false)h='<span class="chip info">Pembatasan WiFi nonaktif</span>';
     else if(S.kantor===true)h='<span class="chip ok">Terhubung WiFi kantor</span>';
     else if(S.kantor===false)h='<span class="chip bad">Di luar WiFi kantor</span>';
@@ -617,72 +733,103 @@ function viewChangePin(){
 }
 
 /* ---------- absen karyawan ---------- */
-function rulerPct(){
-  var st=parseHM(S.cfg.start),en=parseHM(S.cfg.end),lo=st-60,hi=en+60;
-  return function(m){return Math.max(0,Math.min(100,(m-lo)/(hi-lo)*100));};
-}
 function clockText(){var p=nowParts();return pad(p.h)+":"+pad(p.m)+":"+pad(p.s);}
-function ruler(rec){
-  var pct=rulerPct(),st=parseHM(S.cfg.start),en=parseHM(S.cfg.end),n=nowParts();
-  function mk(iso,cls,label){return iso?'<span class="mark '+cls+'" style="left:'+pct(minOf(iso))+'%" title="'+label+' '+hm(iso)+'"></span>':"";}
-  return '<div class="ruler" aria-hidden="true"><div class="track">'+
-    '<span class="band" style="left:'+pct(st)+'%;width:'+(pct(en)-pct(st))+'%"></span>'+
-    '<span class="grace" style="left:'+pct(st)+'%;width:'+(pct(st+S.cfg.grace)-pct(st))+'%"></span>'+
-    mk(rec&&rec.in,"in","Masuk")+mk(rec&&rec.out,"out","Pulang")+
-    '<span class="now" id="nowMark" style="left:'+pct(n.h*60+n.m)+'%"></span></div>'+
-    '<div class="ticks"><span style="left:'+pct(st)+'%">'+esc(S.cfg.start)+'</span><span style="left:'+pct(en)+'%">'+esc(S.cfg.end)+'</span></div></div>';
+function pageHead(title,back){return '<div class="pagehead"><button type="button" class="back" data-act="tab" data-tab="'+back+'" aria-label="Kembali">'+IC.back+'</button><h1>'+esc(title)+'</h1></div>';}
+function pendingLeaves(){return (S.adminLeaves||[]).filter(function(l){return l.status==="diajukan";}).length;}
+
+function presensiControls(rec){
+  var wd=isWorkday(S.today),blocked=S.cfg.enforce!==false&&S.kantor===false;
+  if(!rec){
+    if(S.leaveOpen)return leaveForm(false);
+    return netGate()+(wd?"":'<p class="small">Hari ini bukan hari kerja. Absen tetap dicatat sebagai hari libur.</p>')+
+      '<button type="button" class="btn primary big" data-act="in"'+(S.busy||blocked?" disabled":"")+'>Absen masuk</button>'+
+      '<button type="button" class="btn ghost" data-act="izin-open">Saya izin atau sakit</button>';
+  }
+  if(rec.status==="izin"||rec.status==="sakit")return (rec.note?'<p class="note">'+esc(rec.note)+'</p>':"")+'<p class="small">Perlu perubahan? Hubungi admin untuk koreksi.</p>';
+  if(!rec.out){
+    return netGate()+(S.confirmOut
+      ?'<div class="banner note">Sekarang belum jam pulang ('+esc(S.cfg.end)+'). Tetap absen pulang?</div><div class="btn-row"><button type="button" class="btn primary" data-act="out-yes"'+(S.busy||blocked?" disabled":"")+'>Ya, absen pulang</button><button type="button" class="btn ghost" data-act="out-cancel">Batal</button></div>'
+      :'<button type="button" class="btn primary big" data-act="out"'+(S.busy||blocked?" disabled":"")+'>Absen pulang</button>');
+  }
+  return '<p class="small">Terima kasih, absensi hari ini sudah lengkap.</p>';
 }
-function viewAbsen(){return todayCard()+historyBlock();}
-function todayCard(){
-  var rec=S.todayRec;
-  return '<section class="card hero" aria-label="Absen hari ini"><div class="hero-clock">'+
-    '<div class="eyebrow">'+esc(longDate(S.today))+' · '+esc(tzLabel())+' · jam server</div>'+
-    '<div class="clock" id="clock">'+clockText()+'</div>'+ruler(rec)+
-    '<p class="small">Jam kerja '+esc(S.cfg.start)+'–'+esc(S.cfg.end)+'. Masuk sampai '+fmtMin(parseHM(S.cfg.start)+S.cfg.grace)+' dihitung tepat waktu.</p></div>'+
-    '<div class="hero-act">'+actionBlock(rec)+'</div></section>';
+function presensiCard(){
+  var rec=S.todayRec,key=rec?(rec.status||"hadir"):(isWorkday(S.today)?"belum":"libur");
+  var lab=key==="hadir"?"Tepat waktu":STATUS[key].label,w=rec?minutesWorked(rec):null;
+  return '<article class="act" id="presensi"><div class="act-h"><div><h3>Presensi</h3><div class="small">'+esc(longDate(S.today))+'</div></div><span class="chip '+STATUS[key].cls+'">'+lab+'</span></div>'+
+    '<div class="pres-t"><div><div class="pl"><b>Masuk</b> ('+esc(S.cfg.start)+')</div><div class="pt">'+(rec&&rec.in?hm(rec.in):"--:--")+'</div></div>'+
+    '<div class="arrows" aria-hidden="true">›››</div>'+
+    '<div class="r"><div class="pl"><b>Pulang</b> ('+esc(S.cfg.end)+')</div><div class="pt">'+(rec&&rec.out?hm(rec.out):"--:--")+'</div></div></div>'+
+    '<div class="pres-n small">Sekarang <b class="mono" id="clock">'+clockText()+'</b> '+esc(tzLabel())+(w!=null?' · durasi '+fmtDur(w):"")+(rec&&rec.status==="terlambat"?' · terlambat '+rec.late+' menit':"")+'</div>'+
+    '<div class="pres-a">'+presensiControls(rec)+'</div></article>';
 }
-function leaveForm(){
+function cutiCard(){
+  var up=(S.mine&&S.mine.upcoming)||[],l=null;
+  up.forEach(function(x){if(!l||(x.status==="diajukan"&&l.status!=="diajukan"))l=x;});
+  var inner;
+  if(!l)inner='<p class="small">Belum ada cuti mendatang.</p><span class="link-btn">Ajukan cuti ›</span>';
+  else{
+    var ok=l.status==="disetujui";
+    inner='<ol class="tl"><li class="on"><i></i><div><b>'+(ok?"Diajukan":"Tinjauan")+'</b>'+(ok?"":'<div class="small">'+esc(leaveRange(l))+'</div>')+'</div></li>'+
+      '<li class="'+(ok?"on":"")+'"><i></i><div><b>Disetujui</b>'+(ok?'<div class="small">'+esc(leaveRange(l))+'</div>':"")+'</div></li></ol>';
+  }
+  return '<a class="act cutic" href="#pengajuan" data-act="tab" data-tab="pengajuan"><div class="act-h"><span class="cic">'+IC.cal+'</span><div><h3>Cuti</h3><div class="small">Cuti mendatang</div></div></div>'+inner+'</a>';
+}
+function viewBeranda(){
+  var n=nowParts(),g=n.h<11?"Pagi":n.h<15?"Siang":n.h<18?"Sore":"Malam",first=(S.me.nama||"").trim().split(/\s+/)[0]||"";
+  var pend=pendingLeaves();
+  var quick='<button type="button" data-act="tab" data-tab="jadwal">'+IC.cal+'Jadwal</button><button type="button" data-act="tab" data-tab="pengajuan">'+IC.send+'Pengajuan</button>'+
+    (S.me.admin?'<button type="button" data-act="tab" data-tab="kelola">'+IC.grid+'Kelola'+(pend?'<span class="badge" aria-label="'+pend+' menunggu">'+pend+'</span>':"")+'</button>':"");
+  var st=S.histMonth===monthOf(S.today)?monthStats(S.recs,S.since,S.histMonth,S.me.id):null;
+  return '<section class="greet" aria-label="Sapaan"><div class="greet-t">'+g+', <b>'+esc(first)+'</b></div>'+
+    '<div class="greet-s">'+IC.brief+'<span>'+esc(S.me.divisi||(S.me.admin?"Admin":"Karyawan"))+'</span></div><div class="quick">'+quick+'</div></section>'+
+    '<section class="stack"><h2 class="sh">'+IC.pulse+'Aktivitas saya</h2><div class="hscroll">'+presensiCard()+cutiCard()+'</div></section>'+
+    (st?'<section class="stack"><h2>Bulan ini</h2><div class="strip"><div><b>'+st.hadir+'</b><span>Tepat waktu</span></div><div><b>'+st.terlambat+'</b><span>Terlambat</span></div><div><b>'+(st.izin+st.sakit)+'</b><span>Izin / sakit</span></div><div><b>'+st.cuti+'</b><span>Cuti</span></div><div><b>'+st.alpa+'</b><span>Alpa</span></div></div></section>':"");
+}
+function viewRiwayat(){return historyBlock();}
+function viewProfil(){
+  var m=S.me;
+  return '<section class="stack"><div class="card prof"><button type="button" class="avbtn" data-act="foto-open" aria-label="Ubah foto profil">'+avatar(m.nama,m.id,m.foto,"lg")+'<span class="cam">Ubah</span></button>'+
+    '<div class="prof-t"><h2>'+esc(m.nama)+'</h2><div class="small">'+esc(m.divisi||"Tanpa divisi")+' · <span class="mono">'+esc(m.kode)+'</span></div>'+(m.admin?'<span class="chip info">Admin</span>':"")+'</div></div>'+
+    '<div class="card pad stack"><h2>Jam kerja</h2><p class="small">'+esc(S.cfg.start)+' – '+esc(S.cfg.end)+' '+esc(tzLabel())+'. Masuk sampai '+fmtMin(parseHM(S.cfg.start)+S.cfg.grace)+' dihitung tepat waktu.</p></div>'+
+    '<form data-form="pin" class="card pad stack"><h2>Ganti PIN</h2>'+
+    '<div><label for="f-new">PIN baru</label><input id="f-new" name="new" type="password" required minlength="6" maxlength="12" autocomplete="new-password"></div>'+
+    '<div><label for="f-new2">Ulangi PIN baru</label><input id="f-new2" name="new2" type="password" required minlength="6" maxlength="12" autocomplete="new-password"></div>'+
+    '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Simpan PIN</button></div></form>'+
+    '<button type="button" class="btn" data-act="logout">Keluar</button></section>';
+}
+function cutiReqForm(){
+  return '<div class="stack"><h2>Ajukan cuti</h2><form data-form="cutireq" class="card pad stack"><div class="grid2"><div><label for="c-start">Mulai</label><input id="c-start" name="start" type="date" required min="'+S.today+'"></div><div><label for="c-end">Selesai</label><input id="c-end" name="end" type="date" required min="'+S.today+'"></div></div>'+
+    '<div><label for="c-note">Alasan (boleh dikosongkan)</label><input id="c-note" name="note" maxlength="140"></div>'+
+    '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Ajukan cuti</button></div><p class="small">Pengajuan menunggu persetujuan admin. Hari libur dan akhir pekan tidak dihitung.</p></form></div>';
+}
+function viewPengajuan(){
+  var up=((S.mine&&S.mine.upcoming)||[]).map(function(l){
+    return '<li class="item"><div class="who"><div class="tx"><strong>Cuti '+esc(leaveRange(l))+'</strong><div class="small">'+leaveDays(l)+' hari kerja'+(l.note?' · '+esc(l.note):"")+'</div></div></div><div class="btn-row">'+leaveChip(l.status)+'<button type="button" class="btn sm" data-act="leave-cancel" data-id="'+esc(l.id)+'">Batalkan</button></div></li>';
+  }).join("");
+  var izin=!S.todayRec?'<div class="stack"><h2>Izin atau sakit hari ini</h2><div class="card pad">'+leaveForm(true)+'</div><p class="small">Izin atau sakit bisa dilaporkan dari mana saja.</p></div>':"";
+  return '<section class="stack">'+cutiReqForm()+izin+'<div class="stack"><h2>Pengajuan saya</h2>'+(up?'<ul class="list">'+up+'</ul>':'<div class="empty">Belum ada cuti mendatang.</div>')+'</div></section>';
+}
+function viewKelola(){
+  var pend=pendingLeaves();
+  function tile(tab,ic,t,d,badge){return '<button type="button" class="tile" data-act="tab" data-tab="'+tab+'"><span class="cic">'+ic+'</span><b>'+t+'</b><span class="d">'+d+'</span>'+(badge?'<span class="badge" aria-label="'+badge+' menunggu">'+badge+'</span>':"")+'</button>';}
+  return '<section class="stack"><div class="tiles">'+
+    tile("cuti",IC.cal,"Cuti","Setujui, tolak, tambah",pend)+tile("rekap",IC.table,"Rekap","Harian dan bulanan")+
+    tile("karyawan",IC.users,"Karyawan","Tambah, ubah, reset PIN")+tile("jaringan",IC.wifi,"Jaringan","IP kantor")+
+    tile("pengaturan",IC.gear,"Pengaturan","Jam kerja dan libur")+'</div></section>';
+}
+
+function leaveForm(noCancel){
   return '<form data-form="leave" class="stack"><div><div class="lbl">Keterangan hari ini</div><div class="seg">'+
     '<label><input id="f-izin" type="radio" name="jenis" value="izin" checked><span>Izin</span></label>'+
     '<label><input id="f-sakit" type="radio" name="jenis" value="sakit"><span>Sakit</span></label></div></div>'+
     '<div><label for="f-note">Catatan</label><input id="f-note" name="note" maxlength="140" required placeholder="Alasan singkat"></div>'+
-    '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Kirim</button><button type="button" class="btn ghost" data-act="izin-cancel">Batal</button></div></form>';
+    '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Kirim</button>'+(noCancel?"":'<button type="button" class="btn ghost" data-act="izin-cancel">Batal</button>')+'</div></form>';
 }
 function netGate(){
   if(S.cfg.enforce===false||S.kantor!==false)return "";
   return '<div class="banner" role="alert">Anda tidak tersambung ke WiFi kantor. Tombol absen masuk dan pulang dinonaktifkan sampai Anda tersambung.'+
     ' <button type="button" class="link" data-act="recheck" style="color:inherit">Periksa ulang jaringan</button></div>';
-}
-function actionBlock(rec){
-  var m=S.me,wd=isWorkday(S.today),blocked=S.cfg.enforce!==false&&S.kantor===false;
-  var who='<div class="who-line"><strong>'+esc(m.nama)+'</strong>'+(m.divisi?' · '+esc(m.divisi):"")+'</div>';
-  var body="";
-  if(!rec){
-    if(S.leaveOpen){body=leaveForm();}
-    else{
-      body='<div class="status-line">'+chip("belum")+'</div>'+netGate()+
-        (wd?"":'<p class="small">Hari ini bukan hari kerja. Absen tetap dicatat sebagai hari libur.</p>')+
-        '<button type="button" class="btn primary big" data-act="in"'+(S.busy||blocked?" disabled":"")+'>Absen Masuk</button>'+
-        '<button type="button" class="btn ghost" data-act="izin-open">Saya izin atau sakit</button>'+
-        '<p class="small">Izin atau sakit bisa dilaporkan dari mana saja.</p>';
-    }
-  }else if(rec.status==="izin"||rec.status==="sakit"){
-    body='<div class="status-line">'+chip(rec.status)+'</div>'+(rec.note?'<p class="note">'+esc(rec.note)+'</p>':"")+
-      '<p class="small">Perlu perubahan? Hubungi admin untuk koreksi.</p>';
-  }else{
-    var w=minutesWorked(rec);
-    body='<div class="status-line">'+chip(rec.status||"hadir")+(rec.status==="terlambat"?'<span class="small">'+rec.late+' menit setelah '+esc(S.cfg.start)+'</span>':"")+'</div>'+
-      '<dl class="kv"><div><dt>Masuk</dt><dd>'+hm(rec.in)+'</dd></div><div><dt>Pulang</dt><dd>'+(rec.out?hm(rec.out):"–")+'</dd></div><div><dt>Durasi</dt><dd>'+(w!=null?fmtDur(w):"–")+'</dd></div></dl>';
-    if(!rec.out){
-      body+=netGate();
-      body+=S.confirmOut
-        ?'<div class="banner note">Sekarang belum jam pulang ('+esc(S.cfg.end)+'). Tetap absen pulang?</div><div class="btn-row"><button type="button" class="btn primary" data-act="out-yes"'+(S.busy||blocked?" disabled":"")+'>Ya, absen pulang</button><button type="button" class="btn ghost" data-act="out-cancel">Batal</button></div>'
-        :'<button type="button" class="btn primary big" data-act="out"'+(S.busy||blocked?" disabled":"")+'>Absen Pulang</button>';
-    }else{
-      body+='<p class="small">Terima kasih, absensi hari ini sudah lengkap.</p>';
-    }
-  }
-  return who+body;
 }
 function historyBlock(){
   var ym=S.histMonth,st=monthStats(S.recs,S.since,ym,S.me.id),days=monthDays(ym).filter(function(d){return d<=S.today;}).reverse(),rows="";
@@ -765,16 +912,7 @@ function viewJadwal(){
   (sc.leaves||[]).forEach(function(l){items.push({sort:l.start,html:'<li class="item"><div class="who"><div class="tx"><strong>Cuti '+esc(leaveRange(l))+'</strong><div class="small">'+leaveDays(l)+' hari kerja'+(l.note?' · '+esc(l.note):"")+'</div></div></div><div class="btn-row">'+leaveChip(l.status)+'</div></li>'});});
   items.sort(function(a,b){return a.sort<b.sort?-1:1;});
   var izinBlock='<div class="stack"><h2>Izin dan cuti bulan ini</h2>'+(items.length?'<ul class="list">'+items.map(function(x){return x.html;}).join("")+'</ul>':'<div class="empty">Tidak ada izin atau cuti di bulan ini.</div>')+'</div>';
-  var req="";
-  if(own){
-    var up=(sc.upcoming||[]).map(function(l){
-      return '<li class="item"><div class="who"><div class="tx"><strong>Cuti '+esc(leaveRange(l))+'</strong><div class="small">'+leaveDays(l)+' hari kerja'+(l.note?' · '+esc(l.note):"")+'</div></div></div><div class="btn-row">'+leaveChip(l.status)+'<button type="button" class="btn sm" data-act="leave-cancel" data-id="'+esc(l.id)+'">Batalkan</button></div></li>';
-    }).join("");
-    req='<div class="stack"><h2>Ajukan cuti</h2><form data-form="cutireq" class="card pad stack"><div class="grid2"><div><label for="c-start">Mulai</label><input id="c-start" name="start" type="date" required min="'+S.today+'"></div><div><label for="c-end">Selesai</label><input id="c-end" name="end" type="date" required min="'+S.today+'"></div></div>'+
-      '<div><label for="c-note">Alasan (boleh dikosongkan)</label><input id="c-note" name="note" maxlength="140"></div>'+
-      '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Ajukan cuti</button></div><p class="small">Pengajuan menunggu persetujuan admin. Hari libur dan akhir pekan tidak dihitung.</p></form>'+
-      (up?'<h2>Cuti mendatang</h2><ul class="list">'+up+'</ul>':"")+'</div>';
-  }else req='<p class="small">Untuk menambah atau menyetujui cuti, buka tab Cuti.</p>';
+  var req=own?'<button type="button" class="btn primary" data-act="tab" data-tab="pengajuan">Ajukan cuti</button>':'<p class="small">Untuk menambah atau menyetujui cuti, buka Kelola › Cuti.</p>';
   return '<section class="stack">'+head+nav+'<div class="cal" role="grid" aria-label="Kalender '+esc(monthLabel(ym))+'">'+cells+'</div>'+legend+strip+izinBlock+req+'</section>';
 }
 
@@ -955,14 +1093,18 @@ function viewHtml(){
   var err=S.err?'<div class="banner" role="alert">'+esc(S.err)+'</div>':"",b;
   if(!S.me)b=viewLogin();
   else if(S.mustPin)b=viewChangePin();
-  else if(S.tab==="kehadiran")b=viewKehadiran();
-  else if(S.tab==="jadwal")b=viewJadwal();
-  else if(S.tab==="cuti"&&S.me.admin)b=viewCuti();
-  else if(S.tab==="rekap"&&S.me.admin)b=viewRekap();
-  else if(S.tab==="karyawan"&&S.me.admin)b=viewKaryawan();
-  else if(S.tab==="jaringan"&&S.me.admin)b=viewJaringan();
-  else if(S.tab==="pengaturan"&&S.me.admin)b=viewSettings();
-  else b=viewAbsen();
+  else if(S.tab==="kehadiran")b='<h1 class="pt1">Kehadiran</h1>'+viewKehadiran();
+  else if(S.tab==="riwayat")b=viewRiwayat();
+  else if(S.tab==="profil")b=viewProfil();
+  else if(S.tab==="jadwal")b=pageHead("Jadwal","absen")+viewJadwal();
+  else if(S.tab==="pengajuan")b=pageHead("Pengajuan","absen")+viewPengajuan();
+  else if(S.tab==="kelola"&&S.me.admin)b=pageHead("Kelola","absen")+viewKelola();
+  else if(S.tab==="cuti"&&S.me.admin)b=pageHead("Cuti karyawan","kelola")+viewCuti();
+  else if(S.tab==="rekap"&&S.me.admin)b=pageHead("Rekap","kelola")+viewRekap();
+  else if(S.tab==="karyawan"&&S.me.admin)b=pageHead("Karyawan","kelola")+viewKaryawan();
+  else if(S.tab==="jaringan"&&S.me.admin)b=pageHead("Jaringan","kelola")+viewJaringan();
+  else if(S.tab==="pengaturan"&&S.me.admin)b=pageHead("Pengaturan","kelola")+viewSettings();
+  else b=viewBeranda();
   return err+b;
 }
 function formFocused(){
@@ -1002,7 +1144,7 @@ async function doChangePin(f){
 function logout(msg){
   stopPolling();
   S.me=null;S.pin="";S.board=null;S.ov=null;S.ovRecs=null;S.todayRec=null;S.recs={};S.tab="absen";S.mustPin=false;S.leaveOpen=false;S.confirmOut=false;S.modal=null;S.loaded=false;
-  S.histMonth=null;S.day=null;S.month=null;S.ovMonth=null;S.sch=null;S.schMonth=null;S.schEmp=null;S.adminLeaves=null;S.lvSelf=[];S.lvAll={};
+  S.histMonth=null;S.day=null;S.month=null;S.ovMonth=null;S.sch=null;S.mine=null;S.schMonth=null;S.schEmp=null;S.adminLeaves=null;S.lvSelf=[];S.lvAll={};
   S.err=msg||"";
   renderModal();render(true);doPing().then(function(){render();});
 }
@@ -1155,8 +1297,10 @@ function exportCsv(){
 async function go(tab){
   S.tab=tab;S.err="";
   try{if(location.hash.slice(1)!==tab)history.replaceState(null,"","#"+tab);}catch(e){}
+  if(tab==="absen"&&S.today&&S.histMonth!==monthOf(S.today))S.histMonth=monthOf(S.today);
   render(true);
-  if(tab!=="absen"){await refreshAll(true);}
+  window.scrollTo(0,0);
+  await refreshAll(true);
 }
 async function setOvMonthAndLoad(){
   render(true);
@@ -1168,6 +1312,8 @@ document.addEventListener("click",function(e){
   var t=e.target.closest("[data-act]");
   if(!t)return;
   var a=t.dataset.act;
+  if(t.tagName==="A")e.preventDefault();
+  if(a==="fab"){go("absen");var pe=$("#presensi");if(pe)pe.scrollIntoView({behavior:"smooth",block:"center",inline:"start"});return;}
   if(a==="modal-scrim"){if(e.target!==t)return;a="modal-close";}
   if(a==="tab")return void go(t.dataset.tab);
   if(a==="logout")return logout();
@@ -1239,8 +1385,6 @@ function tick(){
   if(!S.me||S.mustPin)return;
   var p=nowParts(),el=$("#clock");
   if(el)el.textContent=pad(p.h)+":"+pad(p.m)+":"+pad(p.s);
-  var nm=$("#nowMark");
-  if(nm)nm.style.left=rulerPct()(p.h*60+p.m+p.s/60)+"%";
   if(S.today&&p.ymd!==S.today&&!S.busy){S.confirmOut=false;refreshAll(true);}
 }
 function startPolling(){

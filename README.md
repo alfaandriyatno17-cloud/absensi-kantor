@@ -13,6 +13,10 @@ Halaman absensi satu berkas (`index.html`) dengan database Supabase. Absen masuk
 | `supabase/migrations/20261113_absensi_foto_jadwal_cuti.sql` | Foto profil (bucket `abs-foto`), tabel cuti `abs_leaves`, dan aksi jadwal. |
 | `supabase/migrations/20261113_absensi_board_cuti.sql` | Karyawan yang sedang cuti tampil berstatus Cuti di daftar kehadiran. |
 
+## Tampilan
+
+Halaman dibuat seperti aplikasi ponsel: kartu sapaan hijau dengan pintasan **Jadwal** dan **Pengajuan**, bagian **Aktivitas saya** (kartu Presensi dan kartu Cuti), serta navigasi bawah **Beranda, Riwayat, Kehadiran, Profil**. Tombol bulat hijau di tengah membawa karyawan ke kartu Presensi untuk absen. Admin mendapat pintasan **Kelola** untuk Cuti, Rekap, Karyawan, Jaringan, dan Pengaturan.
+
 ## Hak akses
 
 - **Karyawan**: hanya tab **Absen** (absen sendiri dan riwayat sendiri), **Kehadiran** (siapa yang sudah dan belum absen hari ini, beserta jam masuk/pulang dan status izin/sakit; catatan dan IP tidak ditampilkan), dan **Jadwal** (kalender absensi sebulan milik sendiri, daftar izin dan cuti, serta pengajuan cuti). Karyawan juga bisa mengunggah foto profil lewat ikon bulat di pojok kanan atas.
