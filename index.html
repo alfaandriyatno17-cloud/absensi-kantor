@@ -218,7 +218,8 @@ h2{font-family:var(--serif);font-weight:500;font-size:21px;letter-spacing:-.01em
 .btn.big{min-height:64px;font-size:17px;border-radius:14px}
 .chip{padding:3px 11px;font-size:12.5px}
 .strip{display:flex;flex-wrap:wrap;overflow:hidden;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
-.strip div{flex:1 1 130px;padding:14px 18px;background:transparent;box-shadow:-1px -1px 0 0 var(--line)}
+.strip div{flex:1 1 130px;min-width:fit-content;padding:14px 18px;background:transparent;box-shadow:-1px -1px 0 0 var(--line)}
+.strip b{white-space:nowrap}
 .strip b{font-family:var(--serif);font-size:32px;font-weight:500;line-height:1.1;letter-spacing:-.01em}
 .strip span{font-size:12.5px}
 .strip.board div:last-child b{color:var(--bad)}
@@ -252,6 +253,44 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;
   .brand-name{font-size:20px}
   .prog-n{font-size:38px}
 }
+
+/* ===== Foto profil, jadwal, cuti ===== */
+.chip.cuti{color:var(--brass);background:var(--brass-soft)}
+.av{position:relative;overflow:hidden}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;background:var(--surface-2)}
+.av.md{width:56px;height:56px;font-size:22px;font-family:var(--serif);font-weight:500}
+.av.lg{width:104px;height:104px;font-size:40px;font-family:var(--serif);font-weight:500}
+.mebtn{border:0;background:none;padding:0;cursor:pointer;border-radius:50%;display:inline-flex;box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--line)}
+.mebtn .av{width:36px;height:36px;font-size:14px}
+.foto-box{display:flex;justify-content:center;padding:6px 0}
+input[type=file]{padding:9px 10px;font-size:14px}
+.who-head{display:flex;align-items:center;gap:14px;min-width:0}
+.who-head h2{overflow-wrap:anywhere}
+.sel{min-width:min(260px,100%)}
+.badge{display:inline-block;min-width:18px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--brass);color:#fff;font-size:11.5px;line-height:18px;text-align:center}
+.tabs button[aria-current="page"] .badge{background:var(--bg);color:var(--fg)}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal-h{font-size:12.5px;color:var(--muted);font-weight:600;text-align:center;padding:2px 0}
+.cal-c{min-height:86px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:7px 9px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.cal-c.blank{border:0;background:transparent}
+.cal-c .n{font-family:var(--serif);font-size:18px;line-height:1.1}
+.cal-c .l{font-size:11.5px;font-weight:700;line-height:1.2}
+.cal-c .t{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.cal-c.today{box-shadow:0 0 0 2px var(--accent)}
+.cal-c.k-hadir{background:var(--ok-bg);border-color:transparent}.cal-c.k-hadir .l{color:var(--ok)}
+.cal-c.k-terlambat{background:var(--warn-bg);border-color:transparent}.cal-c.k-terlambat .l{color:var(--warn)}
+.cal-c.k-izin{background:var(--info-bg);border-color:transparent}.cal-c.k-izin .l{color:var(--info)}
+.cal-c.k-sakit{background:var(--sick-bg);border-color:transparent}.cal-c.k-sakit .l{color:var(--sick)}
+.cal-c.k-cuti{background:var(--brass-soft);border-color:transparent}.cal-c.k-cuti .l{color:var(--brass)}
+.cal-c.k-pending{border:1px dashed var(--brass)}
+.cal-c.k-alpa{background:var(--bad-bg);border-color:transparent}.cal-c.k-alpa .l{color:var(--bad)}
+.cal-c.k-libur{background:var(--surface-2);border-color:transparent}.cal-c.k-libur .n,.cal-c.k-libur .l{color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:640px){
+  .cal{gap:4px}
+  .cal-c{min-height:62px;padding:5px 3px;align-items:center;text-align:center;border-radius:10px}
+  .cal-c .n{font-size:16px}.cal-c .l{font-size:10px}.cal-c .t{display:none}
+}
 </style>
 </head>
 <body>
@@ -267,6 +306,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;
     <div class="top-r">
       <div id="net"></div>
       <nav class="tabs" id="tabs" aria-label="Menu" hidden></nav>
+      <button type="button" class="mebtn" id="meBtn" data-act="foto-open" aria-label="Ubah foto profil" hidden></button>
       <button type="button" class="btn sm ghost" id="logoutBtn" data-act="logout" hidden>Keluar</button>
     </div>
   </header>
@@ -289,7 +329,7 @@ var DEFAULT_CFG={company:"",start:"08:00",end:"17:00",grace:10,workdays:[1,2,3,4
 var STATUS={
   hadir:{label:"Hadir",cls:"ok"},terlambat:{label:"Terlambat",cls:"warn"},
   izin:{label:"Izin",cls:"info"},sakit:{label:"Sakit",cls:"sick"},alpa:{label:"Alpa",cls:"bad"},
-  belum:{label:"Belum absen",cls:"none"},libur:{label:"Libur",cls:"none"},none:{label:"–",cls:"none"}
+  cuti:{label:"Cuti",cls:"cuti"},belum:{label:"Belum absen",cls:"none"},libur:{label:"Libur",cls:"none"},none:{label:"–",cls:"none"}
 };
 var ERR={
   auth:"Kode karyawan atau PIN salah. Setelah 5 kali salah, akun terkunci 15 menit.",
@@ -319,13 +359,21 @@ var ERR={
   jam_pulang:"Jam pulang harus setelah jam masuk.",
   jam_tidak_valid:"Jam tidak valid.",
   jam_urutan:"Jam pulang harus setelah jam masuk.",
-  zona_tidak_valid:"Zona waktu tidak valid."
+  zona_tidak_valid:"Zona waktu tidak valid.",
+  foto_tidak_valid:"Foto tidak bisa dipakai. Pilih foto JPG atau PNG lain.",
+  unggah_gagal:"Foto gagal disimpan. Coba lagi.",
+  tanggal_tidak_valid:"Isi tanggal mulai dan tanggal selesai dengan benar.",
+  cuti_terlalu_panjang:"Satu pengajuan cuti paling lama 60 hari.",
+  cuti_lampau:"Tanggal mulai cuti tidak boleh sebelum hari ini.",
+  tumpang_tindih:"Tanggal ini bertabrakan dengan cuti lain yang sudah ada.",
+  tidak_bisa_batal:"Cuti ini tidak bisa dibatalkan lagi."
 };
 
 var S={kode:"",pin:"",me:null,cfg:Object.assign({},DEFAULT_CFG),ip:null,kantor:null,pingDone:false,
   offset:0,today:null,recs:{},todayRec:null,since:null,
   tab:"absen",sub:"harian",day:null,month:null,histMonth:null,ov:null,ovMonth:null,
-  busy:false,confirmOut:false,leaveOpen:false,err:"",modal:null,pending:false,mustPin:false,loaded:false};
+  busy:false,confirmOut:false,leaveOpen:false,err:"",modal:null,pending:false,mustPin:false,loaded:false,
+  sch:null,schRecs:{},schMonth:null,schEmp:null,adminLeaves:null,lvSelf:[],lvAll:{}};
 
 function $(s){return document.querySelector(s);}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
@@ -370,19 +418,25 @@ function normCfg(d){
 }
 function isWorkday(s){return S.cfg.workdays.indexOf(dow(s))>=0&&S.cfg.libur.indexOf(s)<0;}
 function minutesWorked(r){return r&&r.in&&r.out?Math.max(0,Math.round((new Date(r.out)-new Date(r.in))/60000)):null;}
-function dayInfo(map,since,date){
+function leaveCovers(emp,date){
+  var L=((S.me&&emp===S.me.id)?S.lvSelf:[]).concat(S.lvAll[emp]||[]);
+  for(var i=0;i<L.length;i++)if(date>=L[i].start&&date<=L[i].end)return true;
+  return false;
+}
+function dayInfo(map,since,date,emp){
   var rec=map&&map[date]||null;
   if(rec)return {rec:rec,key:rec.status||"hadir"};
   if(since&&date<since)return {rec:null,key:"none"};
   if(!isWorkday(date))return {rec:null,key:"libur"};
+  if(emp&&leaveCovers(emp,date))return {rec:null,key:"cuti"};
   if(date>S.today)return {rec:null,key:"none"};
   if(date===S.today)return {rec:null,key:"belum"};
   return {rec:null,key:"alpa"};
 }
-function monthStats(map,since,ym){
-  var st={hadir:0,terlambat:0,izin:0,sakit:0,alpa:0,minutes:0},days=monthDays(ym);
+function monthStats(map,since,ym,emp){
+  var st={hadir:0,terlambat:0,izin:0,sakit:0,cuti:0,alpa:0,minutes:0},days=monthDays(ym);
   for(var i=0;i<days.length;i++){
-    var inf=dayInfo(map,since,days[i]);
+    var inf=dayInfo(map,since,days[i],emp);
     if(inf.key in st&&inf.key!=="minutes")st[inf.key]++;
     var w=inf.rec?minutesWorked(inf.rec):null;
     if(w)st.minutes+=w;
@@ -397,6 +451,37 @@ function mapOf(list,keyField){
 
 /* ---------- komponen kecil ---------- */
 function chip(key){var s=STATUS[key]||STATUS.none;return '<span class="chip '+s.cls+'">'+s.label+'</span>';}
+function fotoUrl(id,v){return v?API.replace(/\/functions\/v1\/absen$/,"")+"/storage/v1/object/public/abs-foto/"+encodeURIComponent(id)+".jpg?v="+encodeURIComponent(v):"";}
+function avatar(nama,id,foto,cls){
+  var i=esc((nama||"?").trim().charAt(0).toUpperCase());
+  return '<span class="av'+(cls?" "+cls:"")+'" aria-hidden="true">'+i+(foto?'<img src="'+esc(fotoUrl(id,foto))+'" alt="" loading="lazy" onerror="this.remove()">':"")+'</span>';
+}
+function resizeImage(file){
+  return new Promise(function(res,rej){
+    if(!file||!/^image\//.test(file.type)){rej(new Error("tipe"));return;}
+    var url=URL.createObjectURL(file),img=new Image();
+    img.onload=function(){
+      URL.revokeObjectURL(url);
+      var w=img.naturalWidth||img.width,h=img.naturalHeight||img.height,sd=Math.min(w,h);
+      if(!sd){rej(new Error("kosong"));return;}
+      var c=document.createElement("canvas");c.width=c.height=320;
+      var x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,320,320);
+      x.drawImage(img,(w-sd)/2,(h-sd)/2,sd,sd,0,0,320,320);
+      var d=c.toDataURL("image/jpeg",0.85);
+      if(d.length>140000)d=c.toDataURL("image/jpeg",0.6);
+      d.length>140000||d.indexOf("data:image/jpeg")!==0?rej(new Error("besar")):res(d);
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);rej(new Error("baca"));};
+    img.src=url;
+  });
+}
+function leaveDays(l){var n=0,d=l.start;while(d<=l.end&&n<400){if(isWorkday(d))n++;d=addDays(d,1);}return n;}
+function leaveRange(l){
+  var a=l.start.split("-").map(Number),b=l.end.split("-").map(Number);
+  if(l.start===l.end)return a[2]+" "+MONTHS_SHORT[a[1]-1]+" "+a[0];
+  return a[2]+" "+MONTHS_SHORT[a[1]-1]+(a[0]!==b[0]?" "+a[0]:"")+" – "+b[2]+" "+MONTHS_SHORT[b[1]-1]+" "+b[0];
+}
+function leaveChip(st){return st==="disetujui"?chip("cuti"):st==="ditolak"?'<span class="chip bad">Ditolak</span>':'<span class="chip warn">Menunggu</span>';}
 function toast(msg){var t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true;},3200);}
 function copyText(t){
   try{navigator.clipboard.writeText(t).then(function(){toast("Disalin");},function(){toast("Salin manual dari kotak");});}
@@ -429,11 +514,12 @@ async function loadStatus(){
   S.me=r.me;S.cfg=normCfg(r.cfg);applyNet(r);
   S.offset=Date.parse(r.server_time)-Date.now();
   S.today=r.today;
-  S.recs=mapOf(r.records);S.todayRec=r.today_rec||null;S.since=r.me&&r.me.since||null;
+  S.recs=mapOf(r.records);S.lvSelf=r.leaves||[];S.todayRec=r.today_rec||null;S.since=r.me&&r.me.since||null;
   S.mustPin=!!r.me.must_change_pin;
   if(!S.histMonth)S.histMonth=monthOf(S.today);
   if(!S.day){S.day=S.today;}
   if(!S.month)S.month=monthOf(S.today);
+  if(!S.schMonth)S.schMonth=monthOf(S.today);
   S.loaded=true;
   return r;
 }
@@ -443,6 +529,7 @@ async function loadOverview(month){
   S.ov=r;S.ovMonth=month||S.ovMonth||S.month;
   S.cfg=normCfg(r.cfg);applyNet(r);
   S.ovRecs=mapOf(r.records,"emp");
+  S.lvAll={};(r.leaves||[]).forEach(function(l){(S.lvAll[l.emp]=S.lvAll[l.emp]||[]).push(l);});
   return r;
 }
 function needOvMonth(){return S.sub==="harian"?monthOf(S.day):S.month;}
@@ -456,6 +543,14 @@ async function refreshAll(silent){
   if(S.me&&S.tab==="kehadiran"){
     var b=await api("board",{});
     if(b.ok)S.board=b;else if(!silent)S.err=errMsg(b.error);
+  }
+  if(S.me&&S.tab==="jadwal"&&!S.mustPin){
+    var sc=await api("schedule",{month:S.schMonth,emp:S.me.admin&&S.schEmp?S.schEmp:undefined});
+    if(sc.ok&&sc.month===S.schMonth){S.sch=sc;S.schRecs=mapOf(sc.records);}else if(!sc.ok&&!silent)S.err=errMsg(sc.error);
+  }
+  if(S.me&&S.me.admin&&!S.mustPin){
+    var al=await api("admin_leave_list",{});
+    if(al.ok)S.adminLeaves=al.leaves;
   }
   if(S.me&&S.me.admin&&S.tab!=="absen"&&S.tab!=="kehadiran"){
     var m=S.tab==="rekap"?needOvMonth():(S.ovMonth||monthOf(S.today));
@@ -484,12 +579,15 @@ function renderHeader(){
   var nav=$("#tabs");
   if(S.me&&!S.mustPin){
     nav.hidden=false;
-    var tabs=S.me.admin?[["absen","Absen"],["kehadiran","Kehadiran"],["rekap","Rekap"],["karyawan","Karyawan"],["jaringan","Jaringan"],["pengaturan","Pengaturan"]]:[["absen","Absen"],["kehadiran","Kehadiran"]];
+    var tabs=S.me.admin?[["absen","Absen"],["kehadiran","Kehadiran"],["jadwal","Jadwal"],["cuti","Cuti"],["rekap","Rekap"],["karyawan","Karyawan"],["jaringan","Jaringan"],["pengaturan","Pengaturan"]]:[["absen","Absen"],["kehadiran","Kehadiran"],["jadwal","Jadwal"]];
+    var pend=(S.adminLeaves||[]).filter(function(l){return l.status==="diajukan";}).length;
     nav.innerHTML=tabs.map(function(t){
-      return '<button type="button" data-act="tab" data-tab="'+t[0]+'"'+(S.tab===t[0]?' aria-current="page"':"")+'>'+t[1]+'</button>';
+      return '<button type="button" data-act="tab" data-tab="'+t[0]+'"'+(S.tab===t[0]?' aria-current="page"':"")+'>'+t[1]+(t[0]==="cuti"&&pend?'<span class="badge" aria-label="'+pend+' menunggu">'+pend+'</span>':"")+'</button>';
     }).join("");
   }else nav.hidden=true;
   $("#logoutBtn").hidden=!S.me;
+  var mb=$("#meBtn");mb.hidden=!(S.me&&!S.mustPin);
+  if(S.me)mb.innerHTML=avatar(S.me.nama,S.me.id,S.me.foto);
   var net=$("#net"),h="";
   if(S.pingDone||S.me){
     if(S.cfg.enforce===false)h='<span class="chip info">Pembatasan WiFi nonaktif</span>';
@@ -587,9 +685,9 @@ function actionBlock(rec){
   return who+body;
 }
 function historyBlock(){
-  var ym=S.histMonth,st=monthStats(S.recs,S.since,ym),days=monthDays(ym).filter(function(d){return d<=S.today;}).reverse(),rows="";
+  var ym=S.histMonth,st=monthStats(S.recs,S.since,ym,S.me.id),days=monthDays(ym).filter(function(d){return d<=S.today;}).reverse(),rows="";
   days.forEach(function(d){
-    var inf=dayInfo(S.recs,S.since,d);
+    var inf=dayInfo(S.recs,S.since,d,S.me.id);
     if(inf.key==="libur"||inf.key==="none")return;
     var r=inf.rec,w=r?minutesWorked(r):null,a=d.split("-");
     rows+='<li class="row"><div class="r-date">'+shortDay(d)+' <small>'+(+a[2])+' '+MONTHS_SHORT[a[1]-1]+'</small></div>'+
@@ -599,7 +697,7 @@ function historyBlock(){
   return '<section class="stack"><div class="sec-h"><h2>Riwayat saya</h2><div class="nav">'+
     '<button type="button" class="btn sm ghost" data-act="hist-prev" aria-label="Bulan sebelumnya">‹</button><span class="label">'+monthLabel(ym)+'</span>'+
     '<button type="button" class="btn sm ghost" data-act="hist-next" aria-label="Bulan berikutnya"'+(ym>=monthOf(S.today)?" disabled":"")+'>›</button></div></div>'+
-    '<div class="strip"><div><b>'+st.hadir+'</b><span>Tepat waktu</span></div><div><b>'+st.terlambat+'</b><span>Terlambat</span></div><div><b>'+st.izin+'</b><span>Izin</span></div><div><b>'+st.sakit+'</b><span>Sakit</span></div><div><b>'+st.alpa+'</b><span>Alpa</span></div><div><b>'+fmtDur(st.minutes)+'</b><span>Total jam kerja</span></div></div>'+
+    '<div class="strip"><div><b>'+st.hadir+'</b><span>Tepat waktu</span></div><div><b>'+st.terlambat+'</b><span>Terlambat</span></div><div><b>'+st.izin+'</b><span>Izin</span></div><div><b>'+st.sakit+'</b><span>Sakit</span></div><div><b>'+st.cuti+'</b><span>Cuti</span></div><div><b>'+st.alpa+'</b><span>Alpa</span></div><div><b>'+fmtDur(st.minutes)+'</b><span>Total jam kerja</span></div></div>'+
     (rows?'<ul class="rows">'+rows+'</ul>':'<div class="empty">Belum ada catatan di bulan ini.</div>')+'</section>';
 }
 
@@ -607,21 +705,90 @@ function historyBlock(){
 function viewKehadiran(){
   if(!S.board)return ovLoading();
   var list=S.board.list||[];
-  var done=list.filter(function(x){return x.status;}),todo=list.filter(function(x){return !x.status;});
+  var cutiL=list.filter(function(x){return x.status==="cuti";});
+  var done=list.filter(function(x){return x.status&&x.status!=="cuti";}),todo=list.filter(function(x){return !x.status;});
+  var total=list.length-cutiL.length;
   var hadir=done.filter(function(x){return x.status==="hadir"||x.status==="terlambat";}).length;
-  var izin=done.filter(function(x){return x.status==="izin"||x.status==="sakit";}).length;
-  var pct=list.length?Math.round(done.length/list.length*100):0;
-  var prog='<div class="card prog"><div class="prog-t"><span class="prog-n">'+done.length+'<small>/ '+list.length+'</small></span><span class="muted">karyawan sudah absen hari ini</span></div><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'"><i style="width:'+pct+'%"></i></div></div>';
-  var strip='<div class="strip board"><div><b>'+list.length+'</b><span>Wajib absen</span></div><div><b>'+hadir+'</b><span>Hadir</span></div><div><b>'+izin+'</b><span>Izin / sakit</span></div><div><b>'+todo.length+'</b><span>Belum absen</span></div></div>';
-  function row(x,isDone){
-    var right=isDone?'<div class="rt">'+chip(x.status)+(x.in?'<span class="small mono">'+(x.out?hm(x.in)+' – '+hm(x.out):'Masuk '+hm(x.in))+'</span>':"")+'</div>':chip("belum");
-    return '<li class="item"><div class="who"><span class="av'+(isDone?" done":"")+'" aria-hidden="true">'+esc((x.nama||"?").trim().charAt(0).toUpperCase())+'</span><div class="tx"><strong>'+esc(x.nama)+'</strong><div class="small">'+esc(x.divisi||"Tanpa divisi")+'</div></div></div><div class="btn-row">'+right+'</div></li>';
+  var izin=done.length-hadir+cutiL.length;
+  var pct=total?Math.round(done.length/total*100):0;
+  var prog='<div class="card prog"><div class="prog-t"><span class="prog-n">'+done.length+'<small>/ '+total+'</small></span><span class="muted">karyawan sudah absen hari ini</span></div><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'"><i style="width:'+pct+'%"></i></div></div>';
+  var strip='<div class="strip board"><div><b>'+list.length+'</b><span>Wajib absen</span></div><div><b>'+hadir+'</b><span>Hadir</span></div><div><b>'+izin+'</b><span>Izin / sakit / cuti</span></div><div><b>'+todo.length+'</b><span>Belum absen</span></div></div>';
+  function row(x,mode){
+    var right=mode==="done"?'<div class="rt">'+chip(x.status)+(x.in?'<span class="small mono">'+(x.out?hm(x.in)+' – '+hm(x.out):'Masuk '+hm(x.in))+'</span>':"")+'</div>':mode==="cuti"?chip("cuti"):chip("belum");
+    return '<li class="item"><div class="who">'+avatar(x.nama,x.id,x.foto,mode==="done"?"done":"")+'<div class="tx"><strong>'+esc(x.nama)+'</strong><div class="small">'+esc(x.divisi||"Tanpa divisi")+'</div></div></div><div class="btn-row">'+right+'</div></li>';
   }
+  function block(title,arr,mode,empty){return '<div class="stack"><h2>'+title+' ('+arr.length+')</h2>'+(arr.length?'<ul class="list">'+arr.map(function(x){return row(x,mode);}).join("")+'</ul>':'<div class="empty">'+empty+'</div>')+'</div>';}
   var off=isWorkday(S.today)?"":'<div class="banner" role="status">Hari ini bukan hari kerja.</div>';
   return '<section class="stack"><div class="sec-h"><h2>Kehadiran '+esc(longDate(S.today))+'</h2></div>'+off+prog+strip+
-    '<div class="stack"><h2>Belum absen ('+todo.length+')</h2>'+(todo.length?'<ul class="list">'+todo.map(function(x){return row(x,false);}).join("")+'</ul>':'<div class="empty">Semua karyawan sudah absen.</div>')+'</div>'+
-    '<div class="stack"><h2>Sudah absen ('+done.length+')</h2>'+(done.length?'<ul class="list">'+done.map(function(x){return row(x,true);}).join("")+'</ul>':'<div class="empty">Belum ada yang absen hari ini.</div>')+'</div>'+
+    block("Belum absen",todo,"todo","Semua karyawan sudah absen.")+
+    block("Sudah absen",done,"done","Belum ada yang absen hari ini.")+
+    (cutiL.length?block("Cuti hari ini",cutiL,"cuti",""):"")+
     '<p class="small">Diperbarui otomatis setiap 20 detik.</p></section>';
+}
+
+/* ---------- jadwal bulanan per karyawan ---------- */
+var SHORT={hadir:"Hadir",terlambat:"Telat",izin:"Izin",sakit:"Sakit",cuti:"Cuti",alpa:"Alpa",libur:"Libur",belum:"Belum",none:""};
+function schDay(d){
+  var sc=S.sch,emp=sc.emp,rec=S.schRecs[d];
+  if(rec)return {rec:rec,key:rec.status||"hadir"};
+  if(emp.since&&d<emp.since)return {key:"none"};
+  if(!isWorkday(d))return {key:"libur"};
+  var lv=null;
+  (sc.leaves||[]).forEach(function(l){if(d>=l.start&&d<=l.end&&l.status!=="ditolak"&&(!lv||l.status==="disetujui"))lv=l;});
+  if(lv)return {key:"cuti",pending:lv.status==="diajukan"};
+  if(emp.wajib===false||d>S.today)return {key:"none"};
+  return {key:d===S.today?"belum":"alpa"};
+}
+function viewJadwal(){
+  if(!S.sch||S.sch.month!==S.schMonth)return ovLoading();
+  var sc=S.sch,ym=S.schMonth,emp=sc.emp,own=emp.id===S.me.id;
+  var sel="";
+  if(S.me.admin&&S.ov)sel='<div class="sel"><label for="f-schemp">Lihat jadwal karyawan</label><select id="f-schemp">'+S.ov.employees.filter(function(e){return e.aktif;}).map(function(e){return '<option value="'+esc(e.id)+'"'+(e.id===emp.id?" selected":"")+'>'+esc(e.nama)+'</option>';}).join("")+'</select></div>';
+  var head='<div class="sec-h"><div class="who-head">'+avatar(emp.nama,emp.id,emp.foto,"md")+'<div><h2>'+esc(emp.nama)+'</h2><div class="small">'+esc(emp.divisi||"Tanpa divisi")+(own?" · jadwal saya":"")+'</div></div></div>'+sel+'</div>';
+  var days=monthDays(ym),off=(dow(days[0])+6)%7,st={hadir:0,terlambat:0,izin:0,sakit:0,cuti:0,alpa:0,minutes:0};
+  var cells=["Sen","Sel","Rab","Kam","Jum","Sab","Min"].map(function(h){return '<div class="cal-h">'+h+'</div>';}).join("");
+  for(var i=0;i<off;i++)cells+='<div class="cal-c blank"></div>';
+  days.forEach(function(d){
+    var inf=schDay(d),r=inf.rec;
+    if(inf.key in st&&!inf.pending)st[inf.key]++;
+    var w=r?minutesWorked(r):null;if(w)st.minutes+=w;
+    var lab=inf.pending?"Ajuan":(SHORT[inf.key]||"");
+    cells+='<div class="cal-c k-'+inf.key+(inf.pending?" k-pending":"")+(d===S.today?" today":"")+'" title="'+esc(longDate(d)+(lab?": "+lab:""))+'"><span class="n">'+(+d.slice(8))+'</span>'+(lab?'<span class="l">'+lab+'</span>':"")+(r&&r.in?'<span class="t">'+hm(r.in)+'</span>':"")+'</div>';
+  });
+  var nav='<div class="sec-h"><h2>'+monthLabel(ym)+'</h2><div class="nav"><button type="button" class="btn sm ghost" data-act="sch-prev" aria-label="Bulan sebelumnya">‹</button>'+
+    '<button type="button" class="btn sm" data-act="sch-now"'+(ym===monthOf(S.today)?" disabled":"")+'>Bulan ini</button>'+
+    '<button type="button" class="btn sm ghost" data-act="sch-next" aria-label="Bulan berikutnya"'+(ym>=addMonth(monthOf(S.today),3)?" disabled":"")+'>›</button></div></div>';
+  var strip='<div class="strip"><div><b>'+st.hadir+'</b><span>Tepat waktu</span></div><div><b>'+st.terlambat+'</b><span>Terlambat</span></div><div><b>'+st.izin+'</b><span>Izin</span></div><div><b>'+st.sakit+'</b><span>Sakit</span></div><div><b>'+st.cuti+'</b><span>Cuti</span></div><div><b>'+st.alpa+'</b><span>Alpa</span></div><div><b>'+fmtDur(st.minutes)+'</b><span>Total jam kerja</span></div></div>';
+  var legend='<div class="legend">'+["hadir","terlambat","izin","sakit","cuti","alpa","libur"].map(chip).join("")+'</div>';
+  var items=[];
+  (sc.records||[]).forEach(function(r){if(r.status==="izin"||r.status==="sakit")items.push({sort:r.date,html:'<li class="item"><div class="who"><div class="tx"><strong>'+esc(longDate(r.date))+'</strong>'+(r.note?'<div class="small">'+esc(r.note)+'</div>':"")+'</div></div><div class="btn-row">'+chip(r.status)+'</div></li>'});});
+  (sc.leaves||[]).forEach(function(l){items.push({sort:l.start,html:'<li class="item"><div class="who"><div class="tx"><strong>Cuti '+esc(leaveRange(l))+'</strong><div class="small">'+leaveDays(l)+' hari kerja'+(l.note?' · '+esc(l.note):"")+'</div></div></div><div class="btn-row">'+leaveChip(l.status)+'</div></li>'});});
+  items.sort(function(a,b){return a.sort<b.sort?-1:1;});
+  var izinBlock='<div class="stack"><h2>Izin dan cuti bulan ini</h2>'+(items.length?'<ul class="list">'+items.map(function(x){return x.html;}).join("")+'</ul>':'<div class="empty">Tidak ada izin atau cuti di bulan ini.</div>')+'</div>';
+  var req="";
+  if(own){
+    var up=(sc.upcoming||[]).map(function(l){
+      return '<li class="item"><div class="who"><div class="tx"><strong>Cuti '+esc(leaveRange(l))+'</strong><div class="small">'+leaveDays(l)+' hari kerja'+(l.note?' · '+esc(l.note):"")+'</div></div></div><div class="btn-row">'+leaveChip(l.status)+'<button type="button" class="btn sm" data-act="leave-cancel" data-id="'+esc(l.id)+'">Batalkan</button></div></li>';
+    }).join("");
+    req='<div class="stack"><h2>Ajukan cuti</h2><form data-form="cutireq" class="card pad stack"><div class="grid2"><div><label for="c-start">Mulai</label><input id="c-start" name="start" type="date" required min="'+S.today+'"></div><div><label for="c-end">Selesai</label><input id="c-end" name="end" type="date" required min="'+S.today+'"></div></div>'+
+      '<div><label for="c-note">Alasan (boleh dikosongkan)</label><input id="c-note" name="note" maxlength="140"></div>'+
+      '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Ajukan cuti</button></div><p class="small">Pengajuan menunggu persetujuan admin. Hari libur dan akhir pekan tidak dihitung.</p></form>'+
+      (up?'<h2>Cuti mendatang</h2><ul class="list">'+up+'</ul>':"")+'</div>';
+  }else req='<p class="small">Untuk menambah atau menyetujui cuti, buka tab Cuti.</p>';
+  return '<section class="stack">'+head+nav+'<div class="cal" role="grid" aria-label="Kalender '+esc(monthLabel(ym))+'">'+cells+'</div>'+legend+strip+izinBlock+req+'</section>';
+}
+
+/* ---------- admin: cuti karyawan ---------- */
+function viewCuti(){
+  if(!S.adminLeaves||!S.ov)return ovLoading();
+  var pend=S.adminLeaves.filter(function(l){return l.status==="diajukan";}),rest=S.adminLeaves.filter(function(l){return l.status!=="diajukan";});
+  function row(l,isPend){
+    return '<li class="item"><div class="who"><div class="tx"><strong>'+esc(l.nama)+'</strong> <span class="small">'+esc(l.divisi||"")+'</span><div class="small">'+esc(leaveRange(l))+' · '+leaveDays(l)+' hari kerja'+(l.note?' · '+esc(l.note):"")+'</div></div></div>'+
+      '<div class="btn-row">'+(isPend?'<button type="button" class="btn sm primary" data-act="leave-ok" data-id="'+esc(l.id)+'">Setujui</button><button type="button" class="btn sm danger" data-act="leave-no" data-id="'+esc(l.id)+'">Tolak</button>':leaveChip(l.status)+'<button type="button" class="btn sm" data-act="leave-del" data-id="'+esc(l.id)+'">Hapus</button>')+'</div></li>';
+  }
+  return '<section class="stack"><div class="sec-h"><h2>Cuti karyawan</h2><button type="button" class="btn sm primary" data-act="cuti-add">Tambah cuti</button></div>'+
+    '<div class="stack"><h2>Menunggu persetujuan ('+pend.length+')</h2>'+(pend.length?'<ul class="list">'+pend.map(function(l){return row(l,true);}).join("")+'</ul>':'<div class="empty">Tidak ada pengajuan cuti yang menunggu.</div>')+'</div>'+
+    '<div class="stack"><h2>Riwayat dan jadwal cuti</h2>'+(rest.length?'<ul class="list">'+rest.map(function(l){return row(l,false);}).join("")+'</ul>':'<div class="empty">Belum ada cuti yang tercatat.</div>')+'</div></section>';
 }
 
 /* ---------- admin: rekap ---------- */
@@ -636,9 +803,9 @@ function viewRekap(){
 function emptyEmps(){return '<div class="empty">Belum ada karyawan aktif. Tambahkan karyawan di tab Karyawan.</div>';}
 function rekapHarian(){
   var emps=activeEmps(),d=S.day;
-  var rows=emps.map(function(e){var inf=dayInfo(S.ovRecs[e.id],e.since,d);return {e:e,inf:inf,r:inf.rec};});
+  var rows=emps.map(function(e){var inf=dayInfo(S.ovRecs[e.id],e.since,d,e.id);return {e:e,inf:inf,r:inf.rec};});
   function cnt(k){return rows.filter(function(x){return x.inf.key===k;}).length;}
-  var strip='<div class="strip"><div><b>'+emps.length+'</b><span>Karyawan aktif</span></div><div><b>'+(cnt("hadir")+cnt("terlambat"))+'</b><span>Hadir</span></div><div><b>'+cnt("terlambat")+'</b><span>Terlambat</span></div><div><b>'+(cnt("izin")+cnt("sakit"))+'</b><span>Izin / sakit</span></div><div><b>'+(cnt("belum")+cnt("alpa"))+'</b><span>Belum absen / alpa</span></div></div>';
+  var strip='<div class="strip"><div><b>'+emps.length+'</b><span>Karyawan aktif</span></div><div><b>'+(cnt("hadir")+cnt("terlambat"))+'</b><span>Hadir</span></div><div><b>'+cnt("terlambat")+'</b><span>Terlambat</span></div><div><b>'+(cnt("izin")+cnt("sakit")+cnt("cuti"))+'</b><span>Izin / sakit / cuti</span></div><div><b>'+(cnt("belum")+cnt("alpa"))+'</b><span>Belum absen / alpa</span></div></div>';
   var trs=rows.map(function(x){
     var e=x.e,r=x.r,w=r?minutesWorked(r):null;
     return '<tr><td class="name"><strong>'+esc(e.nama)+'</strong><div class="small">'+esc([e.kode,e.divisi].filter(Boolean).join(" · "))+'</div></td>'+
@@ -656,22 +823,22 @@ function rekapHarian(){
 function rekapBulanan(){
   var ym=S.month,emps=activeEmps();
   var trs=emps.map(function(e){
-    var st=monthStats(S.ovRecs[e.id],e.since,ym);
+    var st=monthStats(S.ovRecs[e.id],e.since,ym,e.id);
     return '<tr><td class="name"><strong>'+esc(e.nama)+'</strong><div class="small">'+esc([e.kode,e.divisi].filter(Boolean).join(" · "))+'</div></td>'+
-      '<td class="num mono">'+st.hadir+'</td><td class="num mono">'+st.terlambat+'</td><td class="num mono">'+st.izin+'</td><td class="num mono">'+st.sakit+'</td><td class="num mono">'+st.alpa+'</td><td class="num mono">'+fmtDur(st.minutes)+'</td></tr>';
+      '<td class="num mono">'+st.hadir+'</td><td class="num mono">'+st.terlambat+'</td><td class="num mono">'+st.izin+'</td><td class="num mono">'+st.sakit+'</td><td class="num mono">'+st.cuti+'</td><td class="num mono">'+st.alpa+'</td><td class="num mono">'+fmtDur(st.minutes)+'</td></tr>';
   }).join("");
   return '<section class="stack"><div class="sec-h"><h2>Rekap '+monthLabel(ym)+'</h2><div class="nav">'+
     '<button type="button" class="btn sm ghost" data-act="month-prev" aria-label="Bulan sebelumnya">‹</button><span class="label">'+monthLabel(ym)+'</span>'+
     '<button type="button" class="btn sm ghost" data-act="month-next" aria-label="Bulan berikutnya"'+(ym>=monthOf(S.today)?" disabled":"")+'>›</button>'+
     '<button type="button" class="btn sm primary" data-act="export"'+(emps.length?"":" disabled")+'>Unduh CSV</button></div></div>'+
-    (emps.length?'<div class="tablewrap"><table><thead><tr><th>Karyawan</th><th class="num">Tepat waktu</th><th class="num">Terlambat</th><th class="num">Izin</th><th class="num">Sakit</th><th class="num">Alpa</th><th class="num">Total jam</th></tr></thead><tbody>'+trs+'</tbody></table></div>':emptyEmps())+'</section>';
+    (emps.length?'<div class="tablewrap"><table><thead><tr><th>Karyawan</th><th class="num">Tepat waktu</th><th class="num">Terlambat</th><th class="num">Izin</th><th class="num">Sakit</th><th class="num">Cuti</th><th class="num">Alpa</th><th class="num">Total jam</th></tr></thead><tbody>'+trs+'</tbody></table></div>':emptyEmps())+'</section>';
 }
 
 /* ---------- admin: karyawan ---------- */
 function viewKaryawan(){
   if(!S.ov)return ovLoading();
   var items=S.ov.employees.map(function(e){
-    return '<li class="item"><div class="who"><span class="av" aria-hidden="true">'+esc((e.nama||"?").trim().charAt(0).toUpperCase())+'</span><div class="tx"><strong>'+esc(e.nama)+'</strong> <span class="small mono">'+esc(e.kode)+'</span>'+
+    return '<li class="item"><div class="who">'+avatar(e.nama,e.id,e.foto)+'<div class="tx"><strong>'+esc(e.nama)+'</strong> <span class="small mono">'+esc(e.kode)+'</span>'+
       '<div class="small">'+esc(e.divisi||"Tanpa divisi")+'</div></div></div>'+
       '<div class="btn-row">'+(e.admin?'<span class="chip info">Admin</span>':"")+(e.aktif?"":'<span class="chip none">Nonaktif</span>')+(e.wajib===false?'<span class="chip none">Tidak wajib absen</span>':"")+(e.must_change_pin?'<span class="chip warn">PIN sementara</span>':"")+
       '<button type="button" class="btn sm" data-act="emp-edit" data-id="'+esc(e.id)+'">Ubah</button>'+
@@ -740,6 +907,21 @@ function renderModal(){
       '<div class="pinbox" id="pinbox">'+esc(m.pin)+'</div>'+
       '<p class="note">Catat atau salin PIN ini sekarang dan berikan ke karyawan. PIN tidak akan tampil lagi. Karyawan akan diminta membuat PIN sendiri saat pertama masuk.</p>'+
       '<div class="btn-row"><button type="button" class="btn primary" data-act="pin-copy">Salin PIN</button><button type="button" class="btn ghost" data-act="modal-close">Selesai</button></div></div>';
+  }else if(m.type==="foto"){
+    var fme=S.me,pv=m.preview;
+    h='<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="md-t"><h2 id="md-t">Foto profil</h2>'+
+      '<div class="foto-box">'+(pv?'<span class="av lg"><img src="'+pv+'" alt="Pratinjau foto"></span>':avatar(fme.nama,fme.id,fme.foto,"lg"))+'</div>'+
+      '<div><label for="f-foto">Pilih foto</label><input id="f-foto" type="file" accept="image/*"></div>'+
+      '<p class="small">Foto otomatis dipotong persegi dan dikecilkan. Pakai foto wajah yang jelas dalam format JPG atau PNG.</p>'+
+      '<p class="small" role="alert" style="color:var(--bad)"'+(m.msg?"":" hidden")+'>'+esc(m.msg||"")+'</p>'+
+      '<div class="btn-row"><button type="button" class="btn primary" data-act="foto-save"'+(pv&&!S.busy?"":" disabled")+'>Simpan foto</button>'+(fme.foto?'<button type="button" class="btn danger" data-act="foto-del">Hapus foto</button>':"")+'<button type="button" class="btn ghost" data-act="modal-close">Tutup</button></div></div>';
+  }else if(m.type==="cutiadd"){
+    h='<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="md-t"><h2 id="md-t">Tambah cuti</h2>'+
+      '<form data-form="cutiadd" class="stack"><div><label for="ca-emp">Karyawan</label><select id="ca-emp" name="emp">'+S.ov.employees.filter(function(e){return e.aktif;}).map(function(e){return '<option value="'+esc(e.id)+'">'+esc(e.nama)+'</option>';}).join("")+'</select></div>'+
+      '<div class="grid2"><div><label for="ca-start">Mulai</label><input id="ca-start" name="start" type="date" required></div><div><label for="ca-end">Selesai</label><input id="ca-end" name="end" type="date" required></div></div>'+
+      '<div><label for="ca-note">Keterangan</label><input id="ca-note" name="note" maxlength="140"></div>'+
+      '<p class="small" id="ca-err" role="alert" style="color:var(--bad)" hidden></p>'+
+      '<div class="btn-row"><button class="btn primary" type="submit"'+(S.busy?" disabled":"")+'>Simpan cuti</button><button type="button" class="btn ghost" data-act="modal-close">Batal</button></div><p class="small">Cuti yang ditambahkan admin langsung disetujui.</p></form></div>';
   }else if(m.type==="emp"){
     var e=m.emp||{};
     h='<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="md-t"><h2 id="md-t">'+(e.id?"Ubah karyawan":"Tambah karyawan")+'</h2>'+
@@ -774,6 +956,8 @@ function viewHtml(){
   if(!S.me)b=viewLogin();
   else if(S.mustPin)b=viewChangePin();
   else if(S.tab==="kehadiran")b=viewKehadiran();
+  else if(S.tab==="jadwal")b=viewJadwal();
+  else if(S.tab==="cuti"&&S.me.admin)b=viewCuti();
   else if(S.tab==="rekap"&&S.me.admin)b=viewRekap();
   else if(S.tab==="karyawan"&&S.me.admin)b=viewKaryawan();
   else if(S.tab==="jaringan"&&S.me.admin)b=viewJaringan();
@@ -818,13 +1002,51 @@ async function doChangePin(f){
 function logout(msg){
   stopPolling();
   S.me=null;S.pin="";S.board=null;S.ov=null;S.ovRecs=null;S.todayRec=null;S.recs={};S.tab="absen";S.mustPin=false;S.leaveOpen=false;S.confirmOut=false;S.modal=null;S.loaded=false;
-  S.histMonth=null;S.day=null;S.month=null;S.ovMonth=null;
+  S.histMonth=null;S.day=null;S.month=null;S.ovMonth=null;S.sch=null;S.schMonth=null;S.schEmp=null;S.adminLeaves=null;S.lvSelf=[];S.lvAll={};
   S.err=msg||"";
   renderModal();render(true);doPing().then(function(){render();});
 }
 async function doAbsen(kind){
   S.confirmOut=false;
   var r=await act(function(){return api(kind);},kind==="in"?"Absen masuk tercatat":"Absen pulang tercatat");
+  await refreshAll(true);render(true);
+}
+async function onFotoFile(file){
+  if(!file||!S.modal||S.modal.type!=="foto")return;
+  try{S.modal.preview=await resizeImage(file);S.modal.msg="";}
+  catch(e){S.modal.preview=null;S.modal.msg="Foto tidak bisa dibaca. Pilih berkas JPG atau PNG lain.";}
+  renderModal();
+}
+async function saveFoto(){
+  var m=S.modal;if(!m||!m.preview||S.busy)return;
+  S.busy=true;renderModal();
+  var r=await api("photo_set",{image:m.preview});
+  S.busy=false;
+  if(!r.ok){m.msg=errMsg(r.error);renderModal();return;}
+  S.modal=null;renderModal();toast("Foto profil tersimpan");
+  await refreshAll(true);render(true);
+}
+async function delFoto(){
+  var r=await act(function(){return api("photo_del",{});},"Foto profil dihapus");
+  if(r&&r.ok){S.modal=null;renderModal();}
+  await refreshAll(true);render(true);
+}
+async function doCutiReq(f){
+  var fd=new FormData(f);
+  var r=await act(function(){return api("leave_request",{start:String(fd.get("start")||""),end:String(fd.get("end")||""),note:String(fd.get("note")||"").trim()});},"Pengajuan cuti terkirim");
+  await refreshAll(true);render(true);
+}
+async function leaveAction(action,payload,msg){
+  await act(function(){return api(action,payload);},msg);
+  await refreshAll(true);render(true);
+}
+async function saveCutiAdd(f){
+  var fd=new FormData(f),errEl=$("#ca-err");
+  S.busy=true;
+  var r=await api("admin_leave_add",{emp:String(fd.get("emp")||""),start:String(fd.get("start")||""),end:String(fd.get("end")||""),note:String(fd.get("note")||"").trim()});
+  S.busy=false;
+  if(!r.ok){errEl.textContent=errMsg(r.error);errEl.hidden=false;return;}
+  S.modal=null;renderModal();toast("Cuti ditambahkan");
   await refreshAll(true);render(true);
 }
 async function doLeave(f){
@@ -914,8 +1136,8 @@ function exportCsv(){
   activeEmps().forEach(function(e){
     monthDays(ym).forEach(function(d){
       if(d>S.today)return;
-      var inf=dayInfo(S.ovRecs[e.id],e.since,d);
-      if(["hadir","terlambat","izin","sakit","alpa"].indexOf(inf.key)<0)return;
+      var inf=dayInfo(S.ovRecs[e.id],e.since,d,e.id);
+      if(["hadir","terlambat","izin","sakit","cuti","alpa"].indexOf(inf.key)<0)return;
       var r=inf.rec||{},w=minutesWorked(r);
       lines.push([d,e.kode,e.nama,e.divisi||"",r.in?hm(r.in):"",r.out?hm(r.out):"",w!=null?w:"",STATUS[inf.key].label,r.late||0,r.note||""]);
     });
@@ -978,6 +1200,15 @@ document.addEventListener("click",function(e){
   if(a==="pin-copy")return copyText(S.modal&&S.modal.pin||"");
   if(a==="modal-close"){S.modal=null;return renderModal();}
   if(a==="modal-del")return void delRecord();
+  if(a==="foto-open"){S.modal={type:"foto",preview:null,msg:""};return renderModal();}
+  if(a==="foto-save")return void saveFoto();
+  if(a==="foto-del")return void delFoto();
+  if(a==="sch-prev"||a==="sch-next"||a==="sch-now"){S.schMonth=a==="sch-now"?monthOf(S.today):addMonth(S.schMonth,a==="sch-prev"?-1:1);S.sch=null;render(true);return void refreshAll(true);}
+  if(a==="leave-cancel")return void leaveAction("leave_cancel",{id:t.dataset.id},"Cuti dibatalkan");
+  if(a==="leave-ok")return void leaveAction("admin_leave_decide",{id:t.dataset.id,status:"disetujui"},"Cuti disetujui");
+  if(a==="leave-no")return void leaveAction("admin_leave_decide",{id:t.dataset.id,status:"ditolak"},"Cuti ditolak");
+  if(a==="leave-del")return void leaveAction("admin_leave_del",{id:t.dataset.id},"Cuti dihapus");
+  if(a==="cuti-add"){S.modal={type:"cutiadd"};return renderModal();}
 });
 document.addEventListener("submit",function(e){
   var f=e.target.closest("form[data-form]");
@@ -992,8 +1223,12 @@ document.addEventListener("submit",function(e){
   else if(k==="ip-manual")addIp(f,false);
   else if(k==="emp")saveEmp(f);
   else if(k==="edit")saveEdit(f);
+  else if(k==="cutireq")doCutiReq(f);
+  else if(k==="cutiadd")saveCutiAdd(f);
 });
 document.addEventListener("change",function(e){
+  if(e.target.id==="f-foto"){onFotoFile(e.target.files&&e.target.files[0]);return;}
+  if(e.target.id==="f-schemp"){S.schEmp=e.target.value;S.sch=null;render(true);refreshAll(true);return;}
   if(e.target.id==="f-day"&&/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)){S.day=e.target.value;setOvMonthAndLoad();}
 });
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&S.modal){S.modal=null;renderModal();}});
