@@ -419,6 +419,64 @@ body.wide .bnav-in{max-width:1000px}
 .pst strong{font-weight:600;overflow-wrap:anywhere}.pst p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 @media (max-width:420px){.wx span{display:none}.wx b{font-size:14px}}
 @media (max-width:420px){.greet-t{font-size:23px}.pt{font-size:30px}.brand-name{font-size:24px}}
+
+/* ===== Lapisan elegan: kedalaman halus, ritme jarak, gerak lembut ===== */
+:root{--r-lg:26px;--ring:color-mix(in srgb,var(--accent) 14%,transparent);--shadow:0 1px 1px rgba(10,60,25,.04),0 2px 6px rgba(10,60,25,.04),0 22px 44px -26px rgba(10,90,35,.38)}
+body{background-image:radial-gradient(900px 380px at 85% -80px,var(--glow),transparent 70%),radial-gradient(600px 300px at -10% 0,color-mix(in srgb,var(--accent-2) 10%,transparent),transparent 70%);letter-spacing:.005em}
+.wrap{gap:22px}
+.brand-name{background:linear-gradient(120deg,var(--hero-2),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bell,.back,.refbtn{box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.bell:hover,.back:hover,.refbtn:hover{transform:translateY(-1px);border-color:var(--accent)}
+.mebtn{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent-2),0 8px 18px -8px rgba(10,120,40,.6)}
+.greet{border-radius:30px;padding:26px 24px 14px;background:linear-gradient(140deg,var(--hero-1) 0%,var(--hero-2) 78%);box-shadow:0 2px 4px rgba(10,60,25,.12),0 28px 50px -28px rgba(10,120,40,.85)}
+.greet-d{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;margin-bottom:6px;font-weight:500}
+.greet-t{font-size:28px;font-weight:300}
+.greet-s{display:inline-flex;padding:5px 12px;margin-top:10px;border-radius:999px;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);font-size:13px}
+.greet-s .ic{width:16px;height:16px}
+.quick{margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2)}
+.quick .ic{width:30px;height:30px;padding:10px;box-sizing:content-box;border-radius:16px;background:rgba(255,255,255,.16);transition:background .15s,transform .15s}
+.quick button:hover .ic{background:rgba(255,255,255,.28);transform:translateY(-2px)}
+.sh{font-size:17px;font-weight:600}
+.sh .ic{width:30px;height:30px;padding:6px;box-sizing:border-box;border-radius:10px;background:var(--accent-soft);color:var(--accent)}
+.act,.evt,.tm,.ab,.tile,.pst,.card,.help{border-color:color-mix(in srgb,var(--line) 70%,transparent);transition:transform .18s,box-shadow .18s}
+.act,.tm,.ab,.tile,.evt{border-radius:var(--r-lg)}
+.tile:hover,.ab:hover,.tm:hover,.evt:hover{transform:translateY(-2px)}
+.act{background:linear-gradient(180deg,var(--surface),color-mix(in srgb,var(--surface) 92%,var(--accent-soft)))}
+.pt{font-weight:200;font-size:36px}
+.strip{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow)}
+.strip b{font-weight:300;font-size:30px;color:var(--accent)}
+.strip>div:nth-child(5) b{color:var(--bad)}
+.evd{background:linear-gradient(160deg,var(--hero-1),var(--hero-2));color:#fff;box-shadow:0 10px 18px -10px rgba(10,120,40,.7)}
+.help{background:linear-gradient(135deg,var(--hero-2),#0c3f1c);color:#fff;border:0;box-shadow:0 24px 40px -24px rgba(6,60,20,.9);position:relative;overflow:hidden}
+.help::after{content:"";position:absolute;right:-40px;top:-50px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.2),transparent 70%)}
+.help .tx,.help .cic{position:relative;z-index:1}
+.help .cic{background:rgba(255,255,255,.18)}
+.help .btn.primary{background:#fff;color:var(--hero-2);border-color:#fff;box-shadow:none}
+.tm{background:linear-gradient(180deg,var(--surface),color-mix(in srgb,var(--surface) 90%,var(--accent-soft)))}
+.tm .av{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--accent-soft)}
+.ab:nth-child(1) .cic{background:linear-gradient(135deg,#7c4dd6,#5b2fb3)}
+.ab:nth-child(2) .cic{background:linear-gradient(135deg,#ffb23f,#f08a12)}
+.ab:nth-child(3) .cic{background:linear-gradient(135deg,var(--hero-1),var(--hero-2))}
+.ab .cic{width:48px;height:48px;color:#fff;box-shadow:0 10px 18px -10px rgba(0,0,0,.45)}
+.chip{font-weight:600;letter-spacing:.01em}
+.bnav{background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.bnav .ni{transition:color .15s,transform .15s}
+.bnav .ni[aria-current="page"]{position:relative}
+.bnav .ni[aria-current="page"]::after{content:"";position:absolute;top:-9px;width:22px;height:3px;border-radius:0 0 4px 4px;background:var(--accent)}
+.fab{transition:transform .2s,box-shadow .2s}
+.fab:hover{transform:rotate(45deg) scale(1.05)}
+.btn{transition:transform .12s,box-shadow .15s,background .15s}
+.btn:active{transform:scale(.98)}
+.dialog{border-radius:28px;box-shadow:0 40px 80px -30px rgba(0,0,0,.6)}
+.pagehead h1,.pt1{letter-spacing:-.02em}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#view>*{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+#view>*:nth-child(2){animation-delay:.05s}#view>*:nth-child(3){animation-delay:.1s}#view>*:nth-child(4){animation-delay:.15s}#view>*:nth-child(n+5){animation-delay:.2s}
+@media (prefers-reduced-motion:reduce){#view>*{animation:none}.tile,.ab,.tm,.evt,.btn,.fab{transition:none}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--shadow:0 1px 1px rgba(0,0,0,.3),0 24px 44px -26px rgba(0,0,0,.8)}
+ :root:not([data-theme="light"]) .brand-name{background:none;color:var(--accent)}
+ :root:not([data-theme="light"]) .help{background:linear-gradient(135deg,#0f4d22,#0a2a15)}
+ :root:not([data-theme="light"]) .act,:root:not([data-theme="light"]) .tm{background:var(--surface)}}
 </style>
 </head>
 <body>
@@ -892,7 +950,7 @@ function viewBeranda(){
   var quick='<button type="button" data-act="tab" data-tab="jadwal">'+IC.cal+'Jadwal</button><button type="button" data-act="tab" data-tab="pengajuan">'+IC.send+'Pengajuan</button>'+
     (S.me.admin?'<button type="button" data-act="tab" data-tab="kelola">'+IC.grid+'Kelola'+(pend?'<span class="badge" aria-label="'+pend+' menunggu">'+pend+'</span>':"")+'</button>':"");
   var st=S.histMonth===monthOf(S.today)?monthStats(S.recs,S.since,S.histMonth,S.me.id):null;
-  return '<section class="greet" aria-label="Sapaan"><div class="greet-t">'+g+', <b>'+esc(first)+'</b></div>'+
+  return '<section class="greet" aria-label="Sapaan"><div class="greet-d">'+esc(longDate(S.today))+'</div><div class="greet-t">'+g+', <b>'+esc(first)+'</b></div>'+
     '<div class="greet-s">'+IC.brief+'<span>'+esc(S.me.divisi||(S.me.admin?"Admin":"Karyawan"))+'</span></div><div class="quick">'+quick+'</div></section>'+
     '<section class="stack"><h2 class="sh">'+IC.pulse+'Aktivitas saya</h2><div class="hscroll">'+presensiCard()+cutiCard()+'</div></section>'+
     (st?'<section class="stack"><h2>Bulan ini</h2><div class="strip"><div><b>'+st.hadir+'</b><span>Tepat waktu</span></div><div><b>'+st.terlambat+'</b><span>Terlambat</span></div><div><b>'+(st.izin+st.sakit)+'</b><span>Izin / sakit</span></div><div><b>'+st.cuti+'</b><span>Cuti</span></div><div><b>'+st.alpa+'</b><span>Alpa</span></div></div></section>':"")+viewEvents()+viewHelp()+viewTeam()+viewAbout();
