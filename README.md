@@ -58,3 +58,11 @@ Halaman dibuat seperti aplikasi ponsel: kartu sapaan hijau dengan pintasan **Jad
 ## Deploy otomatis
 
 Project Vercel `absensi-kantor` terhubung ke repositori ini. Setiap push ke branch `main` otomatis ter-deploy ke produksi.
+
+## Fitur Beranda tambahan
+
+- **Event terkini**, **Informasi** (tab bawah) dan lonceng notifikasi: admin menambah lewat Kelola > Event & Info.
+- **Laporkan ke tim IT**: karyawan mengirim kendala; admin menanganinya di Kelola > Laporan IT.
+- **Tim saya**: rekan satu divisi beserta status hari ini; "Lihat Semua" membuka daftar kehadiran lengkap.
+- **Tentang Perusahaan** (Visi, Misi, Profil): diisi admin di Kelola > Tentang.
+- Cuaca memakai Open-Meteo sesuai zona waktu kantor. Migrasi: `20261114_absensi_event_info_laporan.sql`.

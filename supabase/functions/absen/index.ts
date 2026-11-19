@@ -22,6 +22,8 @@ const ACTIONS = new Set([
   "admin_reset_pin", "admin_edit_record", "admin_del_record", "admin_save_settings",
   "schedule", "leave_request", "leave_cancel", "photo_set", "photo_del",
   "admin_leave_list", "admin_leave_decide", "admin_leave_add", "admin_leave_del",
+  "home", "posts", "report_send", "admin_post_save", "admin_post_del",
+  "admin_report_list", "admin_report_set", "admin_report_del", "admin_save_about",
 ]);
 
 const BUCKET = "abs-foto";
